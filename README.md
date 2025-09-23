@@ -3,6 +3,10 @@
 PrivacyScanner is an Android app built with **Kotlin** that scans installed applications and helps you review their privacy-related details.  
 
 The goal is to give users better visibility into what apps are installed on their device.  
+- ✅ 100% Free  
+- ✅ No ads  
+- ✅ No trackers  
+- ✅ Open Source (Apache-2.0 License)  
 
 ---
 
@@ -17,22 +21,10 @@ The goal is to give users better visibility into what apps are installed on thei
 
 ---
 
-## 📂 Project Structure  
+## 🛠️ Build Instructions  
 
-- `app/` → Main Android application source (Kotlin, XML layouts, resources)  
-- `gradle/` → Build system files  
-- `screenshots/` → App screenshots for documentation  
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/xabd/PrivacyScanner.git
+   cd PrivacyScanner
 
----
-
-## ⚖️ License  
-
-All rights reserved.  
-This project is open for **viewing and learning purposes only**.  
-You are not allowed to modify, distribute, or use it without permission.  
-
----
-
-## 👤 Author  
-
-Created by **[xabd](https://github.com/xabd)**  
