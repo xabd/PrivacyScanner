@@ -1,0 +1,39 @@
+Categories:
+  - Security
+  - Privacy
+
+License: Apache-2.0
+WebSite: https://github.com/xabd/PrivacyScanner
+SourceCode: https://github.com/xabd/PrivacyScanner
+IssueTracker: https://github.com/xabd/PrivacyScanner/issues
+
+Name: PrivacyScanner
+Summary: Scan installed apps for privacy-related details
+Description: |
+  PrivacyScanner is an Android app built with Kotlin that scans the
+  installed applications on your device and gives you visibility into
+  their privacy-related details.  
+
+  - 100% Free  
+  - No ads  
+  - No trackers  
+  - Open Source (Apache-2.0 License)
+
+RepoType: git
+Repo: https://github.com/xabd/PrivacyScanner.git
+
+Builds:
+  - versionName: 1.0.0
+    versionCode: 1
+    commit: main
+    subdir: app
+    gradle:
+      - yes
+    rm:
+      - gradlew
+      - gradlew.bat
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: 1.0.0
+CurrentVersionCode: 1
