@@ -1,8 +1,0 @@
-sdk_path: /home/xabd/Android/Sdk
-gradle: ./gradlew
-
-repo_keyalias: DESKTOP-U8EQKHE.localdomain
-keystore: keystore.p12
-keystorepass: bf620HiXMbgf1z3sUurkgsZSqwrEREqZB0sdGyfRzFA=
-keypass: bf620HiXMbgf1z3sUurkgsZSqwrEREqZB0sdGyfRzFA=
-keydname: CN=DESKTOP-U8EQKHE.localdomain, OU=F-Droid
