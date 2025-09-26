@@ -1,0 +1,1 @@
+scan installed apps and highlight privacy risks by analyzing their permission
