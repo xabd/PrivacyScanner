@@ -1,4 +1,4 @@
-package com.example.privacyscanner
+package nodomain.xabd.privacyscanner
 
 import org.junit.Test
 

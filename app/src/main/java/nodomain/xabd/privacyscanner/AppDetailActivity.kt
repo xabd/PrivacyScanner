@@ -1,14 +1,18 @@
-package com.example.privacyscanner
+package nodomain.xabd.privacyscanner
 
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import nodomain.xabd.privacyscanner.R
+
 
 class AppDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +55,7 @@ class AppDetailActivity : AppCompatActivity() {
                 tvDetails.text = builder.toString()
 
                 // --- Quick Actions ---
-                if ((appInfo.flags and android.content.pm.ApplicationInfo.FLAG_SYSTEM) != 0) {
+                if ((appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0) {
                     // System app → disable uninstall
                     btnUninstall.isEnabled = false
                     btnUninstall.alpha = 0.5f
@@ -73,7 +77,7 @@ class AppDetailActivity : AppCompatActivity() {
                 // Open app settings
                 btnSettings.setOnClickListener {
                     try {
-                        val settingsIntent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                        val settingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                         settingsIntent.data = Uri.parse("package:$packageName")
                         startActivity(settingsIntent)
                     } catch (e: Exception) {

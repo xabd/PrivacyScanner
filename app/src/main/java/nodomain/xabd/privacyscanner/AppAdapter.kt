@@ -1,4 +1,4 @@
-package com.example.privacyscanner
+package nodomain.xabd.privacyscanner
 
 import android.content.Intent
 import android.graphics.Color
@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import nodomain.xabd.privacyscanner.R
+
 
 class AppAdapter(private var apps: List<AppInfo>) :
     RecyclerView.Adapter<AppAdapter.AppViewHolder>() {

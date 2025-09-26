@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.privacyscanner">
+    package="nodomain.xabd.privacyscanner">
+
 
     <!-- Permissions -->
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
@@ -19,7 +20,7 @@
 
         <!-- Main entry point of the app -->
         <activity
-            android:name=".MainActivity"
+            android:name="nodomain.xabd.privacyscanner.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,8 +29,8 @@
         </activity>
 
         <!-- Other activities -->
-        <activity android:name=".AppDetailActivity" />
-        <activity android:name=".WebViewActivity" />
+        <activity android:name="nodomain.xabd.privacyscanner.AppDetailActivity" />
+        <activity android:name="nodomain.xabd.privacyscanner.WebViewActivity" />
 
     </application>
 </manifest>

@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.privacyscanner"
+    namespace = "nodomain.xabd.privacyscanner"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.privacyscanner"
+        applicationId = "nodomain.xabd.privacyscanner"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
