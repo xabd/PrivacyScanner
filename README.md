@@ -10,6 +10,25 @@ The goal is to give users better visibility into what apps are installed on thei
 
 ---
 
+## 📥 Download PrivacyScanner
+
+### Official recommended (privacy-first)
+[IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/nodomain.xabd.privacyscanner)  
+- Verified and signed APK  
+- Privacy-friendly and reproducible build  
+- Updates automatically if Izzy’s repo is added to F-Droid  
+
+### Direct GitHub release
+[v1.0.0](https://github.com/xabd/PrivacyScanner/releases/tag/v1.0.0)  
+- Same APK as IzzyOnDroid  
+- For users who prefer downloading directly from the source  
+
+> **Note for privacy-conscious users:** For maximum trust and security, use **IzzyOnDroid**.
+
+[<img src="https://shields.rbtlog.dev/simple/nodomain.xabd.privacyscanner" alt="RB Status">](https://shields.rbtlog.dev/nodomain.xabd.privacyscanner)
+
+---
+
 ## 📸 Screenshots  
 
 <p align="center">
@@ -27,4 +46,5 @@ The goal is to give users better visibility into what apps are installed on thei
    ```bash
    git clone https://github.com/xabd/PrivacyScanner.git
    cd PrivacyScanner
+
 
