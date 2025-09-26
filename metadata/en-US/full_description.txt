@@ -1,0 +1,1 @@
+<p><i>PrivacyScanner</i> scans installed applications for potentially risky permissions, and helps you review their privacy-related details. The goal is to give users better visibility into what apps are installed on their device.</p><ul><li>✅ 100% Free</li><li>✅ No ads</li><li>✅ No trackers</li></ul>

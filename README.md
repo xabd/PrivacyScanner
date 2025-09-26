@@ -13,10 +13,10 @@ The goal is to give users better visibility into what apps are installed on thei
 ## 📸 Screenshots  
 
 <p align="center">
-  <img src="screenshots/A.jpg" width="200" />
-  <img src="screenshots/B.jpg" width="200" />
-  <img src="screenshots/C.jpg" width="200" />
-  <img src="screenshots/D.jpg" width="200" />
+  <img src="metadata/en-US/images/phoneScreenshots/A.jpg" width="200" />
+  <img src="metadata/en-US/images/phoneScreenshots/B.jpg" width="200" />
+  <img src="metadata/en-US/images/phoneScreenshots/C.jpg" width="200" />
+  <img src="metadata/en-US/images/phoneScreenshots/D.jpg" width="200" />
 </p>
 
 ---
