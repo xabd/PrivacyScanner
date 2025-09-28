@@ -9,17 +9,15 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import nodomain.xabd.privacyscanner.R
-
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var appAdapter: AppAdapter
@@ -33,6 +31,8 @@ class MainActivity : AppCompatActivity() {
     private var allApps: List<AppInfo> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Follow system dark mode
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -49,14 +49,11 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = appAdapter
 
         // Scan apps
-        btnScan.setOnClickListener {
-            loadInstalledApps()
-        }
+        btnScan.setOnClickListener { loadInstalledApps() }
 
         // Open website in WebView
         btnWebsite.setOnClickListener {
-            val intent = Intent(this, WebViewActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, WebViewActivity::class.java))
         }
 
         // Toggle system apps
@@ -67,7 +64,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadInstalledApps() {
-        // Show loading
         progressBar.visibility = View.VISIBLE
         txtLoading.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
@@ -80,29 +76,21 @@ class MainActivity : AppCompatActivity() {
             for (app in packages) {
                 val name = pm.getApplicationLabel(app).toString()
                 val pkgName = app.packageName
-                val icon = try {
-                    pm.getApplicationIcon(app)
-                } catch (e: Exception) {
-                    null
-                } ?: resources.getDrawable(R.mipmap.ic_launcher, theme)
+                val icon = try { pm.getApplicationIcon(app) } catch (e: Exception) { null }
+                    ?: resources.getDrawable(R.mipmap.ic_launcher, theme)
 
                 val permissions = try {
                     pm.getPackageInfo(pkgName, PackageManager.GET_PERMISSIONS).requestedPermissions?.toList()
                         ?: emptyList()
-                } catch (e: Exception) {
-                    emptyList()
-                }
+                } catch (e: Exception) { emptyList() }
 
                 val risk = calculateRisk(permissions)
-
                 list.add(AppInfo(name, pkgName, permissions, risk, icon, isSystemApp(app)))
             }
 
-            // Save all apps
             allApps = list
 
             withContext(Dispatchers.Main) {
-                // Filter + update UI
                 filterApps()
                 progressBar.visibility = View.GONE
                 txtLoading.visibility = View.GONE
@@ -112,20 +100,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun filterApps() {
-        val filtered = if (showSystemApps) {
-            allApps
-        } else {
-            allApps.filter { !it.isSystemApp }
-        }
-
-        // sort by risk > name
+        val filtered = if (showSystemApps) allApps else allApps.filter { !it.isSystemApp }
         val sorted = filtered.sortedWith(compareByDescending<AppInfo> { it.riskLevel }.thenBy { it.name })
         appAdapter.updateData(sorted)
     }
 
-    private fun isSystemApp(app: ApplicationInfo): Boolean {
-        return (app.flags and ApplicationInfo.FLAG_SYSTEM) != 0
-    }
+    private fun isSystemApp(app: ApplicationInfo) = (app.flags and ApplicationInfo.FLAG_SYSTEM) != 0
 
     private fun calculateRisk(permissions: List<String>): String {
         val high = listOf(
@@ -140,11 +120,10 @@ class MainActivity : AppCompatActivity() {
         )
 
         var score = 0
-        permissions.forEach { perm ->
-            val p = perm.uppercase()
+        permissions.forEach { p ->
             when {
-                high.any { p.contains(it) } -> score += 3
-                medium.any { p.contains(it) } -> score += 2
+                high.any { p.uppercase().contains(it) } -> score += 3
+                medium.any { p.uppercase().contains(it) } -> score += 2
             }
         }
 

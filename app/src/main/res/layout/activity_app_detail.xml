@@ -9,14 +9,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Details text -->
         <TextView
             android:id="@+id/tvDetails"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="19dp"
             android:textColor="?android:attr/textColorPrimary"
-            android:layout_marginBottom="24dp"/>
-
+            android:textSize="16sp" />
 
         <!-- Buttons -->
         <Button
@@ -24,9 +25,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Uninstall App"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="8dp"
             android:backgroundTint="@color/purple_700"
-            android:textColor="@android:color/white" />
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/btnSettings"
@@ -34,8 +35,10 @@
             android:layout_height="wrap_content"
             android:text="Open App Settings"
             android:backgroundTint="@color/purple_700"
-            android:textColor="@android:color/white" />
+            android:textColor="@color/white"
+            android:layout_marginBottom="30dp"/>
 
     </LinearLayout>
 </ScrollView>
+
 

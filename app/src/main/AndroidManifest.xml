@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="nodomain.xabd.privacyscanner">
 
-
     <!-- Permissions -->
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -16,23 +15,28 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.PrivacyScanner">
+        android:theme="@style/Theme.PrivacyScanner"
+        android:enableOnBackInvokedCallback="true"
+        android:allowNativeHeapPointerTagging="false"
+        android:usesNonSdkApi="false">
 
-        <!-- Main entry point of the app -->
+        <!-- Main Activity -->
         <activity
             android:name="nodomain.xabd.privacyscanner.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:resizeableActivity="true"
+            android:windowSoftInputMode="adjustResize|stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- Other activities -->
-        <activity android:name="nodomain.xabd.privacyscanner.AppDetailActivity" />
-        <activity android:name="nodomain.xabd.privacyscanner.WebViewActivity" />
+        <!-- Other Activities -->
+        <activity android:name="nodomain.xabd.privacyscanner.AppDetailActivity"/>
+        <activity android:name="nodomain.xabd.privacyscanner.WebViewActivity"/>
 
     </application>
-</manifest>
 
+</manifest>
 

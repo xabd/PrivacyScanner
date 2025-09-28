@@ -8,8 +8,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import nodomain.xabd.privacyscanner.R
-
 
 class AppAdapter(private var apps: List<AppInfo>) :
     RecyclerView.Adapter<AppAdapter.AppViewHolder>() {
@@ -33,24 +31,20 @@ class AppAdapter(private var apps: List<AppInfo>) :
         holder.pkg.text = app.packageName
         holder.risk.text = app.riskLevel
 
-        // color risk text
-        when {
-            app.riskLevel.contains("High", ignoreCase = true) ->
-                holder.risk.setTextColor(Color.parseColor("#D32F2F"))
-            app.riskLevel.contains("Medium", ignoreCase = true) ->
-                holder.risk.setTextColor(Color.parseColor("#FFA000"))
-            app.riskLevel.contains("Low", ignoreCase = true) ->
-                holder.risk.setTextColor(Color.parseColor("#388E3C"))
-            else ->
-                holder.risk.setTextColor(Color.DKGRAY)
-        }
+        holder.risk.setTextColor(
+            when {
+                app.riskLevel.contains("High", ignoreCase = true) -> Color.parseColor("#D32F2F")
+                app.riskLevel.contains("Medium", ignoreCase = true) -> Color.parseColor("#FFA000")
+                app.riskLevel.contains("Low", ignoreCase = true) -> Color.parseColor("#388E3C")
+                else -> Color.DKGRAY
+            }
+        )
 
-        // click → open AppDetailActivity
         holder.itemView.setOnClickListener {
-            val intent = Intent(holder.itemView.context, AppDetailActivity::class.java)
-            intent.putExtra("PACKAGE_NAME", app.packageName)
-            intent.putStringArrayListExtra("PERMISSIONS", ArrayList(app.permissions))
-            holder.itemView.context.startActivity(intent)
+            holder.itemView.context.startActivity(Intent(holder.itemView.context, AppDetailActivity::class.java).apply {
+                putExtra("PACKAGE_NAME", app.packageName)
+                putStringArrayListExtra("PERMISSIONS", ArrayList(app.permissions))
+            })
         }
     }
 

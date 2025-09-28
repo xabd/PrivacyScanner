@@ -6,15 +6,13 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import nodomain.xabd.privacyscanner.R
+import android.util.Log
 
+class AppDetailActivity : BaseActivity() {
 
-class AppDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_detail)
@@ -33,10 +31,7 @@ class AppDetailActivity : AppCompatActivity() {
 
                 val pkgInfo = pm.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
                 val permissions = pkgInfo.requestedPermissions?.toList() ?: emptyList()
-
                 val risk = calculateRisk(permissions)
-
-                Log.d("PrivacyScanner", "Loaded $appName ($packageName) with ${permissions.size} permissions")
 
                 val builder = StringBuilder()
                 builder.append("App: $appName\n")
@@ -45,41 +40,33 @@ class AppDetailActivity : AppCompatActivity() {
 
                 if (permissions.isNotEmpty()) {
                     builder.append("Permissions:\n")
-                    permissions.forEach { perm ->
-                        builder.append(" • $perm\n")
-                    }
-                } else {
-                    builder.append("No permissions found for this app.")
-                }
+                    permissions.forEach { builder.append(" • $it\n") }
+                } else builder.append("No permissions found for this app.")
 
                 tvDetails.text = builder.toString()
 
-                // --- Quick Actions ---
                 if ((appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0) {
-                    // System app → disable uninstall
                     btnUninstall.isEnabled = false
                     btnUninstall.alpha = 0.5f
                 } else {
-                    // User app → enable uninstall
                     btnUninstall.isEnabled = true
                     btnUninstall.alpha = 1f
                     btnUninstall.setOnClickListener {
                         try {
-                            val uninstallIntent = Intent(Intent.ACTION_DELETE)
-                            uninstallIntent.data = Uri.parse("package:$packageName")
-                            startActivity(uninstallIntent)
+                            startActivity(Intent(Intent.ACTION_DELETE).apply {
+                                data = Uri.parse("package:$packageName")
+                            })
                         } catch (e: Exception) {
                             Toast.makeText(this, "Unable to uninstall app.", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
 
-                // Open app settings
                 btnSettings.setOnClickListener {
                     try {
-                        val settingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                        settingsIntent.data = Uri.parse("package:$packageName")
-                        startActivity(settingsIntent)
+                        startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                            data = Uri.parse("package:$packageName")
+                        })
                     } catch (e: Exception) {
                         Toast.makeText(this, "Unable to open settings.", Toast.LENGTH_SHORT).show()
                     }
@@ -89,9 +76,7 @@ class AppDetailActivity : AppCompatActivity() {
                 Log.e("PrivacyScanner", "Error: ${e.message}", e)
                 tvDetails.text = "Error loading permissions: ${e.message}"
             }
-        } else {
-            tvDetails.text = "No package name received."
-        }
+        } else tvDetails.text = "No package name received."
     }
 
     private fun calculateRisk(permissions: List<String>): String {
@@ -107,11 +92,10 @@ class AppDetailActivity : AppCompatActivity() {
         )
 
         var score = 0
-        permissions.forEach { perm ->
-            val p = perm.uppercase()
+        permissions.forEach { p ->
             when {
-                high.any { p.contains(it) } -> score += 3
-                medium.any { p.contains(it) } -> score += 2
+                high.any { p.uppercase().contains(it) } -> score += 3
+                medium.any { p.uppercase().contains(it) } -> score += 2
             }
         }
 
