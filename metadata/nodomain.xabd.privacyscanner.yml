@@ -3,7 +3,7 @@ Categories:
   - Privacy
 
 License: Apache-2.0
-WebSite: https://github.com/xabd/PrivacyScanner
+Website: https://github.com/xabd/PrivacyScanner
 SourceCode: https://github.com/xabd/PrivacyScanner
 IssueTracker: https://github.com/xabd/PrivacyScanner/issues
 
@@ -25,17 +25,9 @@ Repo: https://github.com/xabd/PrivacyScanner.git
 Builds:
   - versionName: "1.0.2"
     versionCode: 3
-
     commit: v1.0.2
-    gradle:
-      - yes
-
-    output: app/build/outputs/apk/release/app-release-unsigned.apk
-
-    commit: main
-    subdir: app
     gradle: yes
-
+    output: app/build/outputs/apk/release/app-release-unsigned.apk
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
