@@ -14,21 +14,30 @@ Description: |
   installed applications on your device and gives you visibility into
   their privacy-related details.
 
-  - 100% Free
-  - No ads
-  - No trackers
+  - 100% Free  
+  - No ads  
+  - No trackers  
   - Open Source (Apache-2.0 License)
 
 RepoType: git
 Repo: https://github.com/xabd/PrivacyScanner.git
 
 Builds:
-  - versionName: "1.0.2"
-    versionCode: 3
-    commit: v1.0.2
+  - versionName: "1.0.0"
+    versionCode: 1
+
+    commit: v1.0.0
+    gradle:
+      - yes
+
+    output: app/build/outputs/apk/release/app-release-unsigned.apk
+
+    commit: main
+    subdir: app
     gradle: yes
+
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: "1.0.2"
-CurrentVersionCode: 3
+CurrentVersion: "1.0.0"
+CurrentVersionCode: 1
