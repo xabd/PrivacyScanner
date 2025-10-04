@@ -29,22 +29,33 @@ class AppAdapter(private var apps: List<AppInfo>) :
         holder.icon.setImageDrawable(app.icon)
         holder.name.text = app.name
         holder.pkg.text = app.packageName
-        holder.risk.text = app.riskLevel
 
+        // 🔥 Combine risk + source
+        holder.risk.text = "${app.riskLevel} • Source: ${app.source}"
+
+        // Consistent risk colors with AppDetailActivity
         holder.risk.setTextColor(
             when {
-                app.riskLevel.contains("High", ignoreCase = true) -> Color.parseColor("#D32F2F")
-                app.riskLevel.contains("Medium", ignoreCase = true) -> Color.parseColor("#FFA000")
-                app.riskLevel.contains("Low", ignoreCase = true) -> Color.parseColor("#388E3C")
+                app.riskLevel.contains("Trusted App Store", ignoreCase = true) -> Color.parseColor("#1976D2") // Blue
+                app.riskLevel.contains("Trusted", ignoreCase = true) -> Color.parseColor("#00796B") // Teal
+                app.riskLevel.contains("High", ignoreCase = true) -> Color.parseColor("#D32F2F") // Red
+                app.riskLevel.contains("Medium", ignoreCase = true) -> Color.parseColor("#F57C00") // Orange
+                app.riskLevel.contains("Low", ignoreCase = true) -> Color.parseColor("#FBC02D") // Yellow
+                app.riskLevel.contains("Safe", ignoreCase = true) -> Color.parseColor("#388E3C") // Green
                 else -> Color.DKGRAY
             }
         )
 
+        // Open detail screen on click
         holder.itemView.setOnClickListener {
-            holder.itemView.context.startActivity(Intent(holder.itemView.context, AppDetailActivity::class.java).apply {
-                putExtra("PACKAGE_NAME", app.packageName)
-                putStringArrayListExtra("PERMISSIONS", ArrayList(app.permissions))
-            })
+            holder.itemView.context.startActivity(
+                Intent(holder.itemView.context, AppDetailActivity::class.java).apply {
+                    putExtra("PACKAGE_NAME", app.packageName)
+                    putStringArrayListExtra("PERMISSIONS", ArrayList(app.permissions))
+                    putExtra("RISK_LEVEL", app.riskLevel)
+                    putExtra("SOURCE", app.source) // 🔥 Pass source to detail screen
+                }
+            )
         }
     }
 

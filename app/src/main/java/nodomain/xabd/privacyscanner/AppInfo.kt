@@ -8,5 +8,6 @@ data class AppInfo(
     val permissions: List<String>,
     val riskLevel: String,
     val icon: Drawable,
-    val isSystemApp: Boolean = false
+    val isSystemApp: Boolean = false,
+    val source: String = "Unknown" // 🔥 New field for Play/F-Droid/Izzy/etc.
 )

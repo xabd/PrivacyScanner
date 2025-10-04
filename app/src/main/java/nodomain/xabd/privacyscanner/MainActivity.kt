@@ -76,16 +76,35 @@ class MainActivity : BaseActivity() {
             for (app in packages) {
                 val name = pm.getApplicationLabel(app).toString()
                 val pkgName = app.packageName
-                val icon = try { pm.getApplicationIcon(app) } catch (e: Exception) { null }
-                    ?: resources.getDrawable(R.mipmap.ic_launcher, theme)
+                val icon = try {
+                    pm.getApplicationIcon(app)
+                } catch (e: Exception) {
+                    null
+                } ?: resources.getDrawable(R.mipmap.ic_launcher, theme)
 
                 val permissions = try {
-                    pm.getPackageInfo(pkgName, PackageManager.GET_PERMISSIONS).requestedPermissions?.toList()
+                    pm.getPackageInfo(pkgName, PackageManager.GET_PERMISSIONS)
+                        .requestedPermissions?.toList()
                         ?: emptyList()
-                } catch (e: Exception) { emptyList() }
+                } catch (e: Exception) {
+                    emptyList()
+                }
 
-                val risk = calculateRisk(permissions)
-                list.add(AppInfo(name, pkgName, permissions, risk, icon, isSystemApp(app)))
+                // ✅ Get both risk + source
+                val (risk, source) = RiskCalculator.calculate(this@MainActivity, pkgName, permissions)
+
+                // 🔥 Update AppInfo to store source as well
+                list.add(
+                    AppInfo(
+                        name,
+                        pkgName,
+                        permissions,
+                        risk,
+                        icon,
+                        isSystemApp(app),
+                        source // new field
+                    )
+                )
             }
 
             allApps = list
@@ -101,38 +120,25 @@ class MainActivity : BaseActivity() {
 
     private fun filterApps() {
         val filtered = if (showSystemApps) allApps else allApps.filter { !it.isSystemApp }
-        val sorted = filtered.sortedWith(compareByDescending<AppInfo> { it.riskLevel }.thenBy { it.name })
+        val sorted = filtered.sortedWith(
+            compareByDescending<AppInfo> { riskScore(it.riskLevel) }
+                .thenBy { it.name.lowercase() }
+        )
         appAdapter.updateData(sorted)
     }
 
-    private fun isSystemApp(app: ApplicationInfo) = (app.flags and ApplicationInfo.FLAG_SYSTEM) != 0
+    private fun isSystemApp(app: ApplicationInfo) =
+        (app.flags and ApplicationInfo.FLAG_SYSTEM) != 0
 
-    private fun calculateRisk(permissions: List<String>): String {
-        val high = listOf(
-            "READ_SMS", "SEND_SMS", "RECEIVE_SMS",
-            "READ_CONTACTS", "WRITE_CONTACTS",
-            "RECORD_AUDIO", "RECORD_VIDEO",
-            "ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"
-        )
-        val medium = listOf(
-            "CAMERA", "READ_EXTERNAL_STORAGE",
-            "WRITE_EXTERNAL_STORAGE", "READ_PHONE_STATE"
-        )
-
-        var score = 0
-        permissions.forEach { p ->
-            when {
-                high.any { p.uppercase().contains(it) } -> score += 3
-                medium.any { p.uppercase().contains(it) } -> score += 2
-            }
-        }
-
-        return when {
-            score >= 6 -> "High Risk"
-            score >= 3 -> "Medium Risk"
-            score >= 1 -> "Low Risk"
-            else -> "Safe"
-        }
+    // Helper for proper sorting by severity
+    private fun riskScore(risk: String): Int = when {
+        risk.contains("High") -> 3
+        risk.contains("Medium") -> 2
+        risk.contains("Low") -> 1
+        risk.contains("Trusted") -> 4 // ensure trusted apps appear at top
+        else -> 0
     }
 }
+
+
 

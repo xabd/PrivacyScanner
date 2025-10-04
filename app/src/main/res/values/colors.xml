@@ -7,6 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="permissionHighlight">#33FFF59D</color>
+
+    <!-- Outline for light mode -->
+    <color name="colorOutline">#33000000</color> <!-- semi-dark gray -->
 
     <!-- Adaptive colors -->
     <color name="text_primary">?android:attr/textColorPrimary</color>

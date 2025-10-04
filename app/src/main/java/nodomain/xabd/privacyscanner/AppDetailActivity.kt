@@ -1,114 +1,216 @@
 package nodomain.xabd.privacyscanner
 
 import android.content.Intent
-import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.BackgroundColorSpan
+import android.util.Log
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import android.util.Log
+import androidx.core.content.ContextCompat
 
 class AppDetailActivity : BaseActivity() {
+
+    private lateinit var tvRisk: TextView
+    private lateinit var tvSource: TextView
+    private lateinit var btnTrust: Button
+    private lateinit var pkgName: String
+    private lateinit var appLabel: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_detail)
 
-        val tvDetails = findViewById<TextView>(R.id.tvDetails)
-        val btnUninstall = findViewById<Button>(R.id.btnUninstall)
+        val ivAppIcon = findViewById<ImageView>(R.id.ivAppIcon)
+        val tvAppName = findViewById<TextView>(R.id.tvAppName)
+        val tvPackageName = findViewById<TextView>(R.id.tvPackageName)
+        tvRisk = findViewById(R.id.tvRisk)
+        tvSource = findViewById(R.id.tvSource)
+        val tvPermissions = findViewById<TextView>(R.id.tvPermissions)
         val btnSettings = findViewById<Button>(R.id.btnSettings)
+        btnTrust = findViewById(R.id.btnTrust)
 
-        val packageName = intent.getStringExtra("PACKAGE_NAME")
+        pkgName = intent.getStringExtra("PACKAGE_NAME") ?: ""
+        val passedPermissions = intent.getStringArrayListExtra("PERMISSIONS") ?: arrayListOf()
+
+        if (pkgName.isBlank()) {
+            Toast.makeText(this, "No package provided", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
         val pm = packageManager
+        appLabel = pkgName
+        try {
+            val ai = pm.getApplicationInfo(pkgName, 0)
+            appLabel = pm.getApplicationLabel(ai).toString()
+            val icon = pm.getApplicationIcon(pkgName)
+            ivAppIcon.setImageDrawable(icon)
+        } catch (e: PackageManager.NameNotFoundException) {
+            Log.w("AppDetailActivity", "Package not found: $pkgName", e)
+        }
 
-        if (packageName != null) {
-            try {
-                val appInfo = pm.getApplicationInfo(packageName, 0)
-                val appName = pm.getApplicationLabel(appInfo)
+        // 🔥 Real permissions + granted state
+        val permissions = mutableListOf<String>()
+        val grantedMap = mutableMapOf<String, Boolean>()
 
-                val pkgInfo = pm.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
-                val permissions = pkgInfo.requestedPermissions?.toList() ?: emptyList()
-                val risk = calculateRisk(permissions)
+        try {
+            val packageInfo: PackageInfo =
+                pm.getPackageInfo(pkgName, PackageManager.GET_PERMISSIONS)
 
-                val builder = StringBuilder()
-                builder.append("App: $appName\n")
-                builder.append("Package: $packageName\n")
-                builder.append("Risk: $risk\n\n")
+            val requested = packageInfo.requestedPermissions
+            val flags = packageInfo.requestedPermissionsFlags
 
-                if (permissions.isNotEmpty()) {
-                    builder.append("Permissions:\n")
-                    permissions.forEach { builder.append(" • $it\n") }
-                } else builder.append("No permissions found for this app.")
+            if (requested != null) {
+                requested.forEachIndexed { index, perm ->
+                    permissions.add(perm)
 
-                tvDetails.text = builder.toString()
+                    val granted = flags != null &&
+                            (flags[index] and PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0
 
-                if ((appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0) {
-                    btnUninstall.isEnabled = false
-                    btnUninstall.alpha = 0.5f
-                } else {
-                    btnUninstall.isEnabled = true
-                    btnUninstall.alpha = 1f
-                    btnUninstall.setOnClickListener {
-                        try {
-                            startActivity(Intent(Intent.ACTION_DELETE).apply {
-                                data = Uri.parse("package:$packageName")
-                            })
-                        } catch (e: Exception) {
-                            Toast.makeText(this, "Unable to uninstall app.", Toast.LENGTH_SHORT).show()
-                        }
-                    }
+                    grantedMap[perm] = granted
                 }
-
-                btnSettings.setOnClickListener {
-                    try {
-                        startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                            data = Uri.parse("package:$packageName")
-                        })
-                    } catch (e: Exception) {
-                        Toast.makeText(this, "Unable to open settings.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-            } catch (e: Exception) {
-                Log.e("PrivacyScanner", "Error: ${e.message}", e)
-                tvDetails.text = "Error loading permissions: ${e.message}"
             }
-        } else tvDetails.text = "No package name received."
+        } catch (e: Exception) {
+            Log.e("AppDetailActivity", "Failed to load permissions for $pkgName", e)
+            permissions.addAll(passedPermissions) // fallback
+        }
+
+        // 🔥 Risk calculation
+        val (risk, source) = RiskCalculator.calculate(this, pkgName, permissions)
+
+        // Set texts
+        tvAppName.text = appLabel
+        tvPackageName.text = pkgName
+        tvRisk.text = risk  // permission-based score
+        tvSource.text = "Source: $source" // installer/trusted info
+        applyRiskColor(risk)
+
+        // Show Trust/Untrust button state
+        updateTrustButton()
+
+        // ✅ Permissions list with allowed/denied and highlighting
+        if (permissions.isEmpty()) {
+            tvPermissions.text = "No permissions requested by this app."
+        } else {
+            try {
+                val sb = SpannableStringBuilder()
+                val highRiskKeywords = listOf(
+                    "READ_SMS", "SEND_SMS", "RECEIVE_SMS",
+                    "READ_CONTACTS", "WRITE_CONTACTS",
+                    "ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION",
+                    "RECORD_AUDIO", "RECORD_VIDEO", "CALL_PHONE"
+                )
+
+                permissions.distinct().forEach { p ->
+                    val startLine = sb.length
+                    sb.append("• $p ")
+
+                    // ✅ Use grantedMap if available, otherwise fallback check
+                    val granted = grantedMap[p]
+                        ?: (ContextCompat.checkSelfPermission(this, p) == PackageManager.PERMISSION_GRANTED)
+
+                    val statusText = if (granted) "(Allowed)" else "(Not allowed)"
+                    val statusColor =
+                        if (granted) Color.parseColor("#388E3C") else Color.parseColor("#D32F2F") // green / red
+
+                    val statusStart = sb.length
+                    sb.append(statusText)
+                    val statusEnd = sb.length
+
+                    sb.setSpan(
+                        android.text.style.ForegroundColorSpan(statusColor),
+                        statusStart,
+                        statusEnd,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+
+                    sb.append("\n")
+                    val endLine = sb.length
+
+                    // Highlight dangerous permissions
+                    val isHigh = highRiskKeywords.any { kw -> p.uppercase().contains(kw) }
+                    if (isHigh) {
+                        val softHighlight =
+                            ContextCompat.getColor(this, R.color.permissionHighlight)
+                        sb.setSpan(
+                            BackgroundColorSpan(softHighlight),
+                            startLine,
+                            endLine,
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+                    }
+                }
+
+                tvPermissions.setText(sb, TextView.BufferType.SPANNABLE)
+            } catch (e: Exception) {
+                Log.e("AppDetailActivity", "Error building permissions list", e)
+                tvPermissions.text = "Unable to load permissions."
+            }
+        }
+
+        // Open app settings
+        btnSettings.setOnClickListener {
+            try {
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.parse("package:$pkgName")
+                }
+                startActivity(intent)
+            } catch (e: Exception) {
+                Log.e("AppDetailActivity", "Failed to open app settings", e)
+                Toast.makeText(this, "Unable to open app settings", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Trust / Untrust app
+        btnTrust.setOnClickListener {
+            val prefs = getSharedPreferences("trusted_apps", MODE_PRIVATE)
+            val trusted = prefs.getBoolean(pkgName, false)
+
+            if (trusted) {
+                prefs.edit().remove(pkgName).apply()
+                Toast.makeText(this, "$appLabel removed from Trusted", Toast.LENGTH_SHORT).show()
+            } else {
+                prefs.edit().putBoolean(pkgName, true).apply()
+                Toast.makeText(this, "$appLabel marked as Trusted", Toast.LENGTH_SHORT).show()
+            }
+
+            // Refresh UI after trust change
+            val (newRisk, newSource) = RiskCalculator.calculate(this, pkgName, permissions)
+            tvRisk.text = newRisk
+            tvSource.text = "Source: $newSource"
+            applyRiskColor(newRisk)
+            updateTrustButton()
+        }
     }
 
-    private fun calculateRisk(permissions: List<String>): String {
-        val high = listOf(
-            "READ_SMS", "SEND_SMS", "RECEIVE_SMS",
-            "READ_CONTACTS", "WRITE_CONTACTS",
-            "RECORD_AUDIO", "RECORD_VIDEO",
-            "ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"
-        )
-        val medium = listOf(
-            "CAMERA", "READ_EXTERNAL_STORAGE",
-            "WRITE_EXTERNAL_STORAGE", "READ_PHONE_STATE"
-        )
+    private fun updateTrustButton() {
+        val prefs = getSharedPreferences("trusted_apps", MODE_PRIVATE)
+        val trusted = prefs.getBoolean(pkgName, false)
+        btnTrust.text = if (trusted) "Untrust This App" else "Trust This App"
+    }
 
-        var score = 0
-        permissions.forEach { p ->
-            when {
-                high.any { p.uppercase().contains(it) } -> score += 3
-                medium.any { p.uppercase().contains(it) } -> score += 2
-            }
+    private fun applyRiskColor(risk: String) {
+        when {
+            risk.contains("Trusted App Store") -> tvRisk.setTextColor(Color.parseColor("#1976D2")) // Blue
+            risk.contains("Trusted") -> tvRisk.setTextColor(Color.parseColor("#00796B")) // Teal
+            risk.contains("High") -> tvRisk.setTextColor(Color.parseColor("#D32F2F")) // Red
+            risk.contains("Medium") -> tvRisk.setTextColor(Color.parseColor("#F57C00")) // Orange
+            risk.contains("Low") -> tvRisk.setTextColor(Color.parseColor("#FBC02D")) // Yellow
+            else -> tvRisk.setTextColor(Color.parseColor("#388E3C")) // Green (Safe)
         }
-
-        return when {
-            score >= 6 -> "High Risk"
-            score >= 3 -> "Medium Risk"
-            score >= 1 -> "Low Risk"
-            else -> "Safe"
-        }
+        tvRisk.setTypeface(tvRisk.typeface, Typeface.BOLD)
     }
 }
-
-
 
 
 
