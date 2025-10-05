@@ -19,7 +19,7 @@ The goal is to give users better visibility into what apps are installed on thei
 - Updates automatically if Izzy’s repo is added to F-Droid  
 
 ### Direct GitHub release
-[v1.0.2](https://github.com/xabd/PrivacyScanner/releases/tag/v1.0.2)  
+[v1.1.1](https://github.com/xabd/PrivacyScanner/releases/tag/v1.1.1)  
 - Same APK as IzzyOnDroid  
 - For users who prefer downloading directly from the source  
 
