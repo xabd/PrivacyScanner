@@ -12,8 +12,8 @@ pluginManagement {
     }
 
     plugins {
-
-        id("com.android.application") version "8.13.0"
+        // 🔽 Downgraded from 8.13.0 to 8.11.1 for F-Droid compatibility
+        id("com.android.application") version "8.11.1"
         id("org.jetbrains.kotlin.android") version "2.0.21"
     }
 }
