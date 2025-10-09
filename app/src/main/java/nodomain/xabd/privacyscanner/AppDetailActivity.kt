@@ -40,8 +40,6 @@ class AppDetailActivity : BaseActivity() {
         btnTrust = findViewById(R.id.btnTrust)
 
         pkgName = intent.getStringExtra("PACKAGE_NAME") ?: ""
-        val passedPermissions = intent.getStringArrayListExtra("PERMISSIONS") ?: arrayListOf()
-
         if (pkgName.isBlank()) {
             Toast.makeText(this, "No package provided", Toast.LENGTH_SHORT).show()
             finish()
@@ -59,106 +57,88 @@ class AppDetailActivity : BaseActivity() {
             Log.w("AppDetailActivity", "Package not found: $pkgName", e)
         }
 
-        // 🔥 Real permissions + granted state
-        val permissions = mutableListOf<String>()
+        // 🔥 Get *only granted* permissions
+        val grantedPermissions = mutableListOf<String>()
         val grantedMap = mutableMapOf<String, Boolean>()
-
         try {
-            val packageInfo: PackageInfo =
-                pm.getPackageInfo(pkgName, PackageManager.GET_PERMISSIONS)
-
+            val packageInfo: PackageInfo = pm.getPackageInfo(pkgName, PackageManager.GET_PERMISSIONS)
             val requested = packageInfo.requestedPermissions
             val flags = packageInfo.requestedPermissionsFlags
-
-            if (requested != null) {
-                requested.forEachIndexed { index, perm ->
-                    permissions.add(perm)
-
-                    val granted = flags != null &&
-                            (flags[index] and PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0
-
-                    grantedMap[perm] = granted
+            if (requested != null && flags != null) {
+                for (i in requested.indices) {
+                    val granted = (flags[i] and PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0
+                    grantedMap[requested[i]] = granted
+                    if (granted) grantedPermissions.add(requested[i])
                 }
             }
         } catch (e: Exception) {
             Log.e("AppDetailActivity", "Failed to load permissions for $pkgName", e)
-            permissions.addAll(passedPermissions) // fallback
         }
 
-        // 🔥 Risk calculation
-        val (risk, source) = RiskCalculator.calculate(this, pkgName, permissions)
+        // 🧮 Calculate risk based only on *granted* permissions
+        val (risk, source) = RiskCalculator.calculate(this, pkgName, grantedPermissions)
 
-        // Set texts
+        // 🖥️ UI setup
         tvAppName.text = appLabel
         tvPackageName.text = pkgName
-        tvRisk.text = risk  // permission-based score
-        tvSource.text = "Source: $source" // installer/trusted info
+        tvRisk.text = risk
+        tvSource.text = "Source: $source"
         applyRiskColor(risk)
-
-        // Show Trust/Untrust button state
         updateTrustButton()
 
-        // ✅ Permissions list with allowed/denied and highlighting
-        if (permissions.isEmpty()) {
-            tvPermissions.text = "No permissions requested by this app."
-        } else {
-            try {
-                val sb = SpannableStringBuilder()
-                val highRiskKeywords = listOf(
-                    "READ_SMS", "SEND_SMS", "RECEIVE_SMS",
-                    "READ_CONTACTS", "WRITE_CONTACTS",
-                    "ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION",
-                    "RECORD_AUDIO", "RECORD_VIDEO", "CALL_PHONE"
-                )
+        // 🧩 Build permissions list with allowed/denied display
+        try {
+            val sb = SpannableStringBuilder()
+            val highRiskKeywords = listOf(
+                "READ_SMS", "SEND_SMS", "RECEIVE_SMS",
+                "READ_CONTACTS", "WRITE_CONTACTS",
+                "ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION",
+                "RECORD_AUDIO", "RECORD_VIDEO", "CALL_PHONE"
+            )
 
-                permissions.distinct().forEach { p ->
-                    val startLine = sb.length
-                    sb.append("• $p ")
-
-                    // ✅ Use grantedMap if available, otherwise fallback check
-                    val granted = grantedMap[p]
-                        ?: (ContextCompat.checkSelfPermission(this, p) == PackageManager.PERMISSION_GRANTED)
-
+            if (grantedMap.isEmpty()) {
+                tvPermissions.text = "No permissions found."
+            } else {
+                grantedMap.forEach { (perm, granted) ->
+                    val start = sb.length
+                    sb.append("• $perm ")
                     val statusText = if (granted) "(Allowed)" else "(Not allowed)"
-                    val statusColor =
-                        if (granted) Color.parseColor("#388E3C") else Color.parseColor("#D32F2F") // green / red
-
+                    val statusColor = if (granted)
+                        Color.parseColor("#388E3C")
+                    else
+                        Color.parseColor("#D32F2F")
                     val statusStart = sb.length
                     sb.append(statusText)
                     val statusEnd = sb.length
-
                     sb.setSpan(
                         android.text.style.ForegroundColorSpan(statusColor),
                         statusStart,
                         statusEnd,
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
-
                     sb.append("\n")
-                    val endLine = sb.length
 
-                    // Highlight dangerous permissions
-                    val isHigh = highRiskKeywords.any { kw -> p.uppercase().contains(kw) }
+                    // Highlight high-risk permissions (even if not granted)
+                    val isHigh = highRiskKeywords.any { kw -> perm.uppercase().contains(kw) }
                     if (isHigh) {
-                        val softHighlight =
+                        val highlightColor =
                             ContextCompat.getColor(this, R.color.permissionHighlight)
                         sb.setSpan(
-                            BackgroundColorSpan(softHighlight),
-                            startLine,
-                            endLine,
+                            BackgroundColorSpan(highlightColor),
+                            start,
+                            statusEnd,
                             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                         )
                     }
                 }
-
                 tvPermissions.setText(sb, TextView.BufferType.SPANNABLE)
-            } catch (e: Exception) {
-                Log.e("AppDetailActivity", "Error building permissions list", e)
-                tvPermissions.text = "Unable to load permissions."
             }
+        } catch (e: Exception) {
+            Log.e("AppDetailActivity", "Error building permissions list", e)
+            tvPermissions.text = "Unable to load permissions."
         }
 
-        // Open app settings
+        // ⚙️ Open app settings
         btnSettings.setOnClickListener {
             try {
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
@@ -171,11 +151,10 @@ class AppDetailActivity : BaseActivity() {
             }
         }
 
-        // Trust / Untrust app
+        // 🤝 Trust/Untrust toggle
         btnTrust.setOnClickListener {
             val prefs = getSharedPreferences("trusted_apps", MODE_PRIVATE)
             val trusted = prefs.getBoolean(pkgName, false)
-
             if (trusted) {
                 prefs.edit().remove(pkgName).apply()
                 Toast.makeText(this, "$appLabel removed from Trusted", Toast.LENGTH_SHORT).show()
@@ -183,9 +162,7 @@ class AppDetailActivity : BaseActivity() {
                 prefs.edit().putBoolean(pkgName, true).apply()
                 Toast.makeText(this, "$appLabel marked as Trusted", Toast.LENGTH_SHORT).show()
             }
-
-            // Refresh UI after trust change
-            val (newRisk, newSource) = RiskCalculator.calculate(this, pkgName, permissions)
+            val (newRisk, newSource) = RiskCalculator.calculate(this, pkgName, grantedPermissions)
             tvRisk.text = newRisk
             tvSource.text = "Source: $newSource"
             applyRiskColor(newRisk)
@@ -201,18 +178,16 @@ class AppDetailActivity : BaseActivity() {
 
     private fun applyRiskColor(risk: String) {
         when {
-            risk.contains("Trusted App Store") -> tvRisk.setTextColor(Color.parseColor("#1976D2")) // Blue
-            risk.contains("Trusted") -> tvRisk.setTextColor(Color.parseColor("#00796B")) // Teal
-            risk.contains("High") -> tvRisk.setTextColor(Color.parseColor("#D32F2F")) // Red
-            risk.contains("Medium") -> tvRisk.setTextColor(Color.parseColor("#F57C00")) // Orange
-            risk.contains("Low") -> tvRisk.setTextColor(Color.parseColor("#FBC02D")) // Yellow
-            else -> tvRisk.setTextColor(Color.parseColor("#388E3C")) // Green (Safe)
+            risk.contains("Trusted App Store") -> tvRisk.setTextColor(Color.parseColor("#1976D2"))
+            risk.contains("Trusted") -> tvRisk.setTextColor(Color.parseColor("#00796B"))
+            risk.contains("High") -> tvRisk.setTextColor(Color.parseColor("#D32F2F"))
+            risk.contains("Medium") -> tvRisk.setTextColor(Color.parseColor("#F57C00"))
+            risk.contains("Low") -> tvRisk.setTextColor(Color.parseColor("#FBC02D"))
+            else -> tvRisk.setTextColor(Color.parseColor("#388E3C"))
         }
         tvRisk.setTypeface(tvRisk.typeface, Typeface.BOLD)
     }
 }
-
-
 
 
 

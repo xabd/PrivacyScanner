@@ -2,7 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="40dp">
+    android:padding="24dp"
+    android:fadeScrollbars="false">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,10 +16,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="12dp"
-            android:layout_marginTop="24dp"
+            android:padding="16dp"
             android:background="@drawable/card_background"
-            android:layout_marginBottom="16dp">
+            android:elevation="2dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="20dp"
+            android:clipToOutline="true">
 
             <ImageView
                 android:id="@+id/ivAppIcon"
@@ -31,9 +34,9 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_marginStart="12dp"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:orientation="vertical">
 
                 <!-- App Name -->
                 <TextView
@@ -50,7 +53,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:textColor="?android:attr/textColorSecondary" />
 
                 <!-- Source -->
@@ -61,7 +64,7 @@
                     android:text="Source: Unknown"
                     android:textColor="@android:color/darker_gray"
                     android:textSize="13sp"
-                    android:layout_marginTop="2dp"/>
+                    android:layout_marginTop="4dp" />
 
                 <!-- Risk Label -->
                 <TextView
@@ -76,7 +79,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Permissions title -->
+        <!-- Permissions Section -->
         <TextView
             android:id="@+id/tvPermissionsTitle"
             android:layout_width="match_parent"
@@ -85,6 +88,15 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="?android:attr/textColorPrimary"
+            android:layout_marginBottom="2dp" />
+
+        <TextView
+            android:id="@+id/tvPermissionsSubTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="(Based on granted permissions)"
+            android:textSize="12sp"
+            android:textColor="?android:attr/textColorSecondary"
             android:layout_marginBottom="8dp" />
 
         <!-- Permissions list -->
@@ -95,27 +107,33 @@
             android:textSize="14sp"
             android:lineSpacingExtra="4dp"
             android:textColor="?android:attr/textColorPrimary"
-            android:paddingBottom="20dp" />
+            android:paddingBottom="8dp" />
 
-        <!-- Open App Settings button -->
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Buttons -->
         <Button
             android:id="@+id/btnSettings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Open App Settings"
             android:backgroundTint="@color/purple_700"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="10dp" />
 
-        <!-- Trust / Untrust button -->
         <Button
             android:id="@+id/btnTrust"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Trust This App"
-            android:layout_marginTop="5dp"
-            android:paddingBottom="5dp"
             android:backgroundTint="@color/teal_700"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="30dp"/>
 
     </LinearLayout>
 </ScrollView>

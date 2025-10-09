@@ -2,7 +2,9 @@ package nodomain.xabd.privacyscanner
 
 import android.content.Intent
 import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -48,15 +50,17 @@ class MainActivity : BaseActivity() {
         appAdapter = AppAdapter(listOf())
         recyclerView.adapter = appAdapter
 
-        // Scan apps
+        // 🔍 Scan apps
         btnScan.setOnClickListener { loadInstalledApps() }
 
-        // Open website in WebView
+        // 🌐 Open website externally (no internet, uses browser)
         btnWebsite.setOnClickListener {
-            startActivity(Intent(this, WebViewActivity::class.java))
+            val url = "https://digital-escape-tools.vercel.app"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            startActivity(intent)
         }
 
-        // Toggle system apps
+        // 🧩 Toggle system apps visibility
         chkSystemApps.setOnCheckedChangeListener { _, isChecked ->
             showSystemApps = isChecked
             filterApps()
@@ -82,27 +86,36 @@ class MainActivity : BaseActivity() {
                     null
                 } ?: resources.getDrawable(R.mipmap.ic_launcher, theme)
 
-                val permissions = try {
-                    pm.getPackageInfo(pkgName, PackageManager.GET_PERMISSIONS)
-                        .requestedPermissions?.toList()
-                        ?: emptyList()
+                // ✅ Only granted permissions, not just declared ones
+                val grantedPermissions = try {
+                    val pkgInfo = pm.getPackageInfo(pkgName, PackageManager.GET_PERMISSIONS)
+                    val requested = pkgInfo.requestedPermissions
+                    val flags = pkgInfo.requestedPermissionsFlags
+                    val granted = mutableListOf<String>()
+
+                    if (requested != null && flags != null) {
+                        for (i in requested.indices) {
+                            if (flags[i] and PackageInfo.REQUESTED_PERMISSION_GRANTED != 0) {
+                                granted.add(requested[i])
+                            }
+                        }
+                    }
+                    granted
                 } catch (e: Exception) {
                     emptyList()
                 }
 
-                // ✅ Get both risk + source
-                val (risk, source) = RiskCalculator.calculate(this@MainActivity, pkgName, permissions)
+                val (risk, source) = RiskCalculator.calculate(this@MainActivity, pkgName, grantedPermissions)
 
-                // 🔥 Update AppInfo to store source as well
                 list.add(
                     AppInfo(
                         name,
                         pkgName,
-                        permissions,
+                        grantedPermissions,
                         risk,
                         icon,
                         isSystemApp(app),
-                        source // new field
+                        source
                     )
                 )
             }
@@ -130,15 +143,11 @@ class MainActivity : BaseActivity() {
     private fun isSystemApp(app: ApplicationInfo) =
         (app.flags and ApplicationInfo.FLAG_SYSTEM) != 0
 
-    // Helper for proper sorting by severity
     private fun riskScore(risk: String): Int = when {
         risk.contains("High") -> 3
         risk.contains("Medium") -> 2
         risk.contains("Low") -> 1
-        risk.contains("Trusted") -> 4 // ensure trusted apps appear at top
+        risk.contains("Trusted") -> 4
         else -> 0
     }
 }
-
-
-

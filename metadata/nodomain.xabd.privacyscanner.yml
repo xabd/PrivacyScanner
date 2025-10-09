@@ -19,5 +19,5 @@ Builds:
       - yes
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: 1.1.1
+CurrentVersion: 1.1.4
 CurrentVersionCode: 5

@@ -5,7 +5,6 @@
 
     <!-- Permissions -->
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -34,7 +33,7 @@
 
         <!-- Other Activities -->
         <activity android:name="nodomain.xabd.privacyscanner.AppDetailActivity"/>
-        <activity android:name="nodomain.xabd.privacyscanner.WebViewActivity"/>
+
 
     </application>
 

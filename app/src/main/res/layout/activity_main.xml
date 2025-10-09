@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context="nodomain.xabd.privacyscanner.MainActivity">
 
-    <!-- Top guideline to avoid notch/status bar overlap -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineTop"
         android:layout_width="wrap_content"
@@ -15,7 +14,6 @@
         app:layout_constraintGuide_begin="72dp"
         android:orientation="horizontal" />
 
-    <!-- Scan button -->
     <Button
         android:id="@+id/btnScan"
         android:layout_marginTop="10dp"
@@ -26,7 +24,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guidelineTop" />
 
-    <!-- Open Website button -->
     <Button
         android:id="@+id/btnWebsite"
         android:layout_width="wrap_content"
@@ -37,7 +34,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Checkbox to show/hide system apps -->
     <CheckBox
         android:id="@+id/chkSystemApps"
         android:layout_width="wrap_content"
@@ -49,7 +45,6 @@
         app:layout_constraintTop_toBottomOf="@id/btnWebsite"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- ProgressBar -->
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleLarge"
@@ -61,7 +56,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Loading text -->
     <TextView
         android:id="@+id/txtLoading"
         android:layout_width="wrap_content"
@@ -75,7 +69,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
@@ -91,6 +84,7 @@
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
 
