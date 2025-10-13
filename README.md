@@ -12,7 +12,7 @@ The goal is to give users better visibility into what apps are installed on thei
 
 ## ☕ Support Development  
 
-If you like PrivacyScanner or my other privacy-focused tools, you can support me here:  
+If you like PrivacyScanner you can support me here:  
 👉 [**Ko-fi.com/DigitalEscape**](https://ko-fi.com/digitalescape)  
 
 Your support helps keep this open-source project alive 💚  
