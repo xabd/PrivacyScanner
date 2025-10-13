@@ -10,15 +10,24 @@ The goal is to give users better visibility into what apps are installed on thei
 
 ---
 
-## 📥 Download PrivacyScanner
+## ☕ Support Development  
 
-### Official recommended (privacy-first)
+If you like PrivacyScanner or my other privacy-focused tools, you can support me here:  
+👉 [**Ko-fi.com/DigitalEscape**](https://ko-fi.com/digitalescape)  
+
+Your support helps keep this open-source project alive 💚  
+
+---
+
+## 📥 Download PrivacyScanner  
+
+### Official recommended (privacy-first)  
 [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/nodomain.xabd.privacyscanner)  
 - Verified and signed APK  
 - Privacy-friendly and reproducible build  
 - Updates automatically if Izzy’s repo is added to F-Droid  
 
-### Direct GitHub release
+### Direct GitHub release  
 [v1.1.3](https://github.com/xabd/PrivacyScanner/releases/tag/v1.1.3)  
 - Same APK as IzzyOnDroid  
 - For users who prefer downloading directly from the source  
@@ -46,5 +55,6 @@ The goal is to give users better visibility into what apps are installed on thei
    ```bash
    git clone https://github.com/xabd/PrivacyScanner.git
    cd PrivacyScanner
+
 
 
