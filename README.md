@@ -33,6 +33,9 @@ The goal is to give users better visibility into what apps are installed on thei
 📊 **Downloads:**  
 ![GitHub all releases](https://img.shields.io/github/downloads/xabd/PrivacyScanner/total?label=Total%20Downloads&logo=github&color=brightgreen)
 
+
+
+[<img src="https://shields.rbtlog.dev/simple/nodomain.xabd.privacyscanner" alt="RB Status">](https://shields.rbtlog.dev/nodomain.xabd.privacyscanner)
 ---
 
 ## ☕ Support Development  
