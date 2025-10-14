@@ -10,31 +10,37 @@ The goal is to give users better visibility into what apps are installed on thei
 
 ---
 
+## 📦 Download
+
+<p align="center">
+  <a href="https://github.com/xabd/PrivacyScanner/releases">
+    <img src="https://img.shields.io/badge/Get%20it%20on-GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="Get it on GitHub">
+  </a>
+  <br/>
+  <a href="https://apps.obtainium.im/apk/nodomain.xabd.privacyscanner">
+    <img src="https://img.shields.io/badge/Get%20it%20on-Obtainium-5E2E91?style=for-the-badge&logo=obtainium&logoColor=white" alt="Get it on Obtainium">
+  </a>
+  <br/>
+  <a href="https://f-droid.org/packages/nodomain.xabd.privacyscanner">
+    <img src="https://img.shields.io/badge/Get%20it%20on-F--Droid-1976D2?style=for-the-badge&logo=fdroid&logoColor=white" alt="Get it on F-Droid">
+  </a>
+  <br/>
+  <a href="https://apt.izzysoft.de/fdroid/index/apk/nodomain.xabd.privacyscanner">
+    <img src="https://img.shields.io/badge/Get%20it%20on-IzzyOnDroid-00C853?style=for-the-badge&logo=android&logoColor=white" alt="Get it on IzzyOnDroid">
+  </a>
+</p>
+
+📊 **Downloads:**  
+![GitHub all releases](https://img.shields.io/github/downloads/xabd/PrivacyScanner/total?label=Total%20Downloads&logo=github&color=brightgreen)
+
+---
+
 ## ☕ Support Development  
 
 If you like PrivacyScanner, you can support me here:  
 👉 [**Ko-fi.com/DigitalEscape**](https://ko-fi.com/digitalescape)  
 
 Your support helps keep this open-source project alive 💚  
-
----
-
-## 📥 Download PrivacyScanner  
-
-Choose your preferred source:  
-
-[![GitHub release](https://img.shields.io/github/v/release/xabd/PrivacyScanner?label=GitHub%20Releases&logo=github&color=blue)](https://github.com/xabd/PrivacyScanner/releases)
-[![IzzyOnDroid](https://img.shields.io/static/v1?label=IzzyOnDroid&message=Download&color=brightgreen&logo=android)](https://apt.izzysoft.de/fdroid/index/apk/nodomain.xabd.privacyscanner)
-[![F-Droid](https://img.shields.io/static/v1?label=F-Droid&message=Coming%20Soon&color=orange&logo=fdroid)](https://f-droid.org/packages/nodomain.xabd.privacyscanner)
-
-- **GitHub** → Latest signed APKs directly from the source  
-- **IzzyOnDroid** → Privacy-focused builds with automatic updates  
-- **F-Droid** → Official listing coming soon on [f-droid.org](https://f-droid.org/packages/nodomain.xabd.privacyscanner)  
-
-📊 **Downloads:**  
-![GitHub all releases](https://img.shields.io/github/downloads/xabd/PrivacyScanner/total?label=Total%20Downloads&logo=github&color=brightgreen)
-
-[<img src="https://shields.rbtlog.dev/simple/nodomain.xabd.privacyscanner" alt="RB Status">](https://shields.rbtlog.dev/nodomain.xabd.privacyscanner)
 
 ---
 
@@ -55,5 +61,4 @@ Choose your preferred source:
    ```bash
    git clone https://github.com/xabd/PrivacyScanner.git
    cd PrivacyScanner
-
 
