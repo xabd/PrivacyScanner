@@ -12,7 +12,7 @@ The goal is to give users better visibility into what apps are installed on thei
 
 ## ☕ Support Development  
 
-If you like PrivacyScanner you can support me here:  
+If you like PrivacyScanner, you can support me here:  
 👉 [**Ko-fi.com/DigitalEscape**](https://ko-fi.com/digitalescape)  
 
 Your support helps keep this open-source project alive 💚  
@@ -21,18 +21,18 @@ Your support helps keep this open-source project alive 💚
 
 ## 📥 Download PrivacyScanner  
 
-### Official recommended (privacy-first)  
-[IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/nodomain.xabd.privacyscanner)  
-- Verified and signed APK  
-- Privacy-friendly and reproducible build  
-- Updates automatically if Izzy’s repo is added to F-Droid  
+Choose your preferred source:  
 
-### Direct GitHub release  
-[v1.1.3](https://github.com/xabd/PrivacyScanner/releases/tag/v1.1.3)  
-- Same APK as IzzyOnDroid  
-- For users who prefer downloading directly from the source  
+[![GitHub release](https://img.shields.io/github/v/release/xabd/PrivacyScanner?label=GitHub%20Releases&logo=github&color=blue)](https://github.com/xabd/PrivacyScanner/releases)
+[![IzzyOnDroid](https://img.shields.io/static/v1?label=IzzyOnDroid&message=Download&color=brightgreen&logo=android)](https://apt.izzysoft.de/fdroid/index/apk/nodomain.xabd.privacyscanner)
+[![F-Droid](https://img.shields.io/static/v1?label=F-Droid&message=Coming%20Soon&color=orange&logo=fdroid)](https://f-droid.org/packages/nodomain.xabd.privacyscanner)
 
-> **Note for privacy-conscious users:** For maximum trust and security, use **IzzyOnDroid**.
+- **GitHub** → Latest signed APKs directly from the source  
+- **IzzyOnDroid** → Privacy-focused builds with automatic updates  
+- **F-Droid** → Official listing coming soon on [f-droid.org](https://f-droid.org/packages/nodomain.xabd.privacyscanner)  
+
+📊 **Downloads:**  
+![GitHub all releases](https://img.shields.io/github/downloads/xabd/PrivacyScanner/total?label=Total%20Downloads&logo=github&color=brightgreen)
 
 [<img src="https://shields.rbtlog.dev/simple/nodomain.xabd.privacyscanner" alt="RB Status">](https://shields.rbtlog.dev/nodomain.xabd.privacyscanner)
 
@@ -55,6 +55,5 @@ Your support helps keep this open-source project alive 💚
    ```bash
    git clone https://github.com/xabd/PrivacyScanner.git
    cd PrivacyScanner
-
 
 
