@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Dark theme base colors -->
+    <color name="purple_200">#BB86FC</color>
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="teal_700">#018786</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="permissionHighlight">#3355FF99</color>
+
     <!-- Outline for dark mode -->
     <color name="colorOutline">#80FFFFFF</color> <!-- semi-transparent white -->
+
+    <!-- Adaptive card colors -->
+    <color name="colorSurface">#1E1E1E</color> <!-- slightly lighter gray for cards -->
+    <color name="colorOutlineVariant">#333333</color> <!-- subtle border for contrast -->
+
+    <!-- Text colors -->
+    <color name="text_primary">#FFFFFFFF</color>
+    <color name="text_secondary">#B3FFFFFF</color>
+    <color name="cardBackgroundColor">#2A2A2A</color>   <!-- Dark gray -->
+    <color name="cardStrokeColor">#55FFFFFF</color>     <!-- Light outline -->
+
 </resources>

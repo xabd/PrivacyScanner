@@ -7,17 +7,12 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 class MainActivity : BaseActivity() {
 
@@ -28,17 +23,43 @@ class MainActivity : BaseActivity() {
     private lateinit var chkSystemApps: CheckBox
     private lateinit var btnScan: Button
     private lateinit var btnWebsite: Button
+    private lateinit var txtHeader: TextView
+    private lateinit var ivInfo: ImageView
 
     private var showSystemApps = false
     private var allApps: List<AppInfo> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Follow system dark mode
+        // 🌙 Follow system dark mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // UI references
+        // 🟪 Header title
+        txtHeader = findViewById(R.id.txtHeader)
+        txtHeader.text = "PrivacyScanner"
+
+        // 🆕 Info icon (menu)
+        ivInfo = findViewById(R.id.ivInfo)
+        ivInfo.setOnClickListener {
+            val popup = PopupMenu(this, ivInfo)
+            popup.menu.apply {
+                add("🔗 View Source Code")
+                add("🐞 Report an Issue")
+                add("💖 Donate / Support")
+            }
+            popup.setOnMenuItemClickListener { item ->
+                when (item.title) {
+                    "🔗 View Source Code" -> openLink("https://github.com/xabd/PrivacyScanner")
+                    "🐞 Report an Issue" -> openLink("https://github.com/xabd/PrivacyScanner/issues")
+                    "💖 Donate / Support" -> openLink("https://ko-fi.com/digitalescape")
+                }
+                true
+            }
+            popup.show()
+        }
+
+        // 🔹 UI setup
         btnScan = findViewById(R.id.btnScan)
         btnWebsite = findViewById(R.id.btnWebsite)
         recyclerView = findViewById(R.id.recyclerView)
@@ -50,84 +71,102 @@ class MainActivity : BaseActivity() {
         appAdapter = AppAdapter(listOf())
         recyclerView.adapter = appAdapter
 
-        // 🔍 Scan apps
         btnScan.setOnClickListener { loadInstalledApps() }
 
-        // 🌐 Open website externally (no internet, uses browser)
         btnWebsite.setOnClickListener {
             val url = "https://digital-escape-tools.vercel.app"
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-            startActivity(intent)
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
 
-        // 🧩 Toggle system apps visibility
         chkSystemApps.setOnCheckedChangeListener { _, isChecked ->
             showSystemApps = isChecked
             filterApps()
         }
     }
 
+    private fun openLink(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(intent)
+    }
+
     private fun loadInstalledApps() {
         progressBar.visibility = View.VISIBLE
         txtLoading.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
+        btnScan.isEnabled = false
+        txtLoading.text = "Scanning installed apps, please wait..."
 
         CoroutineScope(Dispatchers.IO).launch {
             val pm = packageManager
-            val packages = pm.getInstalledApplications(PackageManager.GET_META_DATA)
-            val list = mutableListOf<AppInfo>()
+            val apps = pm.getInstalledApplications(PackageManager.GET_META_DATA)
+            val resultList = mutableListOf<AppInfo>()
 
-            for (app in packages) {
-                val name = pm.getApplicationLabel(app).toString()
-                val pkgName = app.packageName
-                val icon = try {
-                    pm.getApplicationIcon(app)
-                } catch (e: Exception) {
-                    null
-                } ?: resources.getDrawable(R.mipmap.ic_launcher, theme)
+            for ((index, app) in apps.withIndex()) {
+                try {
+                    val name = pm.getApplicationLabel(app).toString()
+                    val pkgName = app.packageName
+                    val icon = pm.getApplicationIcon(app)
+                    val isSystem = isSystemApp(app)
+                    val grantedPermissions = getGrantedPermissions(pm, pkgName)
 
-                // ✅ Only granted permissions, not just declared ones
-                val grantedPermissions = try {
-                    val pkgInfo = pm.getPackageInfo(pkgName, PackageManager.GET_PERMISSIONS)
-                    val requested = pkgInfo.requestedPermissions
-                    val flags = pkgInfo.requestedPermissionsFlags
-                    val granted = mutableListOf<String>()
+                    val (risk, source) =
+                        RiskCalculator.calculate(this@MainActivity, pkgName, grantedPermissions)
 
-                    if (requested != null && flags != null) {
-                        for (i in requested.indices) {
-                            if (flags[i] and PackageInfo.REQUESTED_PERMISSION_GRANTED != 0) {
-                                granted.add(requested[i])
-                            }
+                    resultList.add(
+                        AppInfo(
+                            name = name,
+                            packageName = pkgName,
+                            permissions = grantedPermissions,
+                            riskLevel = risk,
+                            icon = icon,
+                            isSystemApp = isSystem,
+                            source = source
+                        )
+                    )
+
+                    if (index % 15 == 0) {
+                        withContext(Dispatchers.Main) {
+                            txtLoading.text = "Scanning... (${index + 1}/${apps.size})"
                         }
                     }
-                    granted
-                } catch (e: Exception) {
-                    emptyList()
+
+                } catch (_: Exception) {
                 }
-
-                val (risk, source) = RiskCalculator.calculate(this@MainActivity, pkgName, grantedPermissions)
-
-                list.add(
-                    AppInfo(
-                        name,
-                        pkgName,
-                        grantedPermissions,
-                        risk,
-                        icon,
-                        isSystemApp(app),
-                        source
-                    )
-                )
             }
 
-            allApps = list
+            allApps = resultList
 
             withContext(Dispatchers.Main) {
                 filterApps()
                 progressBar.visibility = View.GONE
                 txtLoading.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
+                btnScan.isEnabled = true
+                Toast.makeText(
+                    this@MainActivity,
+                    "✅ Scan completed: ${allApps.size} apps",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
+        }
+    }
+
+    private fun getGrantedPermissions(pm: PackageManager, pkgName: String): List<String> {
+        return try {
+            val pkgInfo = pm.getPackageInfo(pkgName, PackageManager.GET_PERMISSIONS)
+            val requested = pkgInfo.requestedPermissions
+            val flags = pkgInfo.requestedPermissionsFlags
+            val granted = mutableListOf<String>()
+            if (requested != null && flags != null) {
+                for (i in requested.indices) {
+                    if (flags[i] and PackageInfo.REQUESTED_PERMISSION_GRANTED != 0) {
+                        granted.add(requested[i])
+                    }
+                }
+            }
+            granted
+        } catch (_: Exception) {
+            emptyList()
         }
     }
 
@@ -138,16 +177,18 @@ class MainActivity : BaseActivity() {
                 .thenBy { it.name.lowercase() }
         )
         appAdapter.updateData(sorted)
+        txtLoading.text = "Showing ${sorted.size} apps"
     }
 
     private fun isSystemApp(app: ApplicationInfo) =
         (app.flags and ApplicationInfo.FLAG_SYSTEM) != 0
 
     private fun riskScore(risk: String): Int = when {
-        risk.contains("High") -> 3
-        risk.contains("Medium") -> 2
-        risk.contains("Low") -> 1
-        risk.contains("Trusted") -> 4
+        risk.contains("high", true) -> 5
+        risk.contains("medium", true) -> 4
+        risk.contains("low", true) -> 3
+        risk.contains("safe", true) -> 2
+        risk.contains("trusted", true) -> 1
         else -> 0
     }
 }

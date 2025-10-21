@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 
 object RiskCalculator {
 
+    // 🟩 Trusted app stores
     private val trustedStores = mapOf(
         "org.fdroid.fdroid" to "F-Droid",
         "com.android.vending" to "Google Play",
@@ -12,28 +13,34 @@ object RiskCalculator {
         "com.izzyondroid.installer" to "IzzyOnDroid"
     )
 
+    // 🟩 Trusted apps
     private val trustedApps = mapOf(
         "org.schabi.newpipe" to "F-Droid (Verified)",
         "com.aurora.services" to "Aurora Services",
         "com.fsck.k9" to "K-9 Mail"
     )
 
-    private val high = listOf(
-        "READ_SMS", "SEND_SMS", "RECEIVE_SMS",
-        "READ_CONTACTS", "WRITE_CONTACTS",
-        "ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION",
-        "RECORD_AUDIO", "RECORD_VIDEO", "CALL_PHONE"
+    // 🟥 Critical (privacy-sensitive) permissions
+    private val criticalPerms = listOf(
+        "READ_SMS", "SEND_SMS", "RECEIVE_SMS", "READ_CONTACTS", "WRITE_CONTACTS",
+        "RECORD_AUDIO", "RECORD_VIDEO", "CALL_PHONE", "READ_CALL_LOG", "WRITE_CALL_LOG",
+        "READ_CALENDAR", "WRITE_CALENDAR", "ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"
     )
 
-    private val medium = listOf(
-        "CAMERA", "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE", "READ_PHONE_STATE"
+    // 🟧 Medium-risk permissions
+    private val mediumPerms = listOf(
+        "CAMERA", "READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE",
+        "READ_PHONE_STATE", "BODY_SENSORS", "ACCESS_WIFI_STATE", "ACCESS_NETWORK_STATE"
+    )
+
+    // 🟩 Low-risk / normal permissions
+    private val lowPerms = listOf(
+        "INTERNET", "VIBRATE", "FOREGROUND_SERVICE", "BLUETOOTH", "NFC"
     )
 
     /**
-     * Calculate risk for an app.
-     * @param permissions list of declared permissions (fallback if grantedMap not available)
-     * @param grantedMap optional map of permission -> granted state (true/false)
+     * 🧩 Main Risk Calculation Function
+     * Returns Pair<RiskLevel, Source + Reason>
      */
     fun calculate(
         context: Context,
@@ -43,63 +50,104 @@ object RiskCalculator {
     ): Pair<String, String> {
 
         val prefs = context.getSharedPreferences("trusted_apps", Context.MODE_PRIVATE)
-
-        // ✅ Filter: only include granted permissions if available
+        val pm = context.packageManager
         val effectivePermissions = grantedMap?.filterValues { it }?.keys?.toList() ?: permissions
 
-        // 🧩 Step 1: Handle trust overrides
+        // ✅ 1. User-marked trusted
         if (prefs.getBoolean(pkgName, false)) {
-            val risk = scoreRisk(effectivePermissions)
-            return risk to "User Marked Trusted"
+            return "Safe (User Trusted)" to "Marked trusted by user"
         }
 
-        // 🧩 Step 2: App itself is a known trusted store
+        // ✅ 2. Known trusted apps/stores
         if (trustedStores.containsKey(pkgName)) {
-            val risk = scoreRisk(effectivePermissions)
-            return risk to "Trusted App Store (${trustedStores[pkgName]})"
+            return "Safe (Trusted Store)" to "Trusted App Store (${trustedStores[pkgName]})"
+        }
+        if (trustedApps.containsKey(pkgName)) {
+            return "Safe (Verified)" to trustedApps[pkgName]!!
         }
 
-        // 🧩 Step 3: Installed via trusted store
-        val installer = context.packageManager.getInstallerPackageName(pkgName)
-        if (installer != null && trustedStores.containsKey(installer)) {
-            val risk = scoreRisk(effectivePermissions)
-            return risk to "Trusted (via ${trustedStores[installer]})"
+        // ✅ 3. Determine installer source
+        val installer = try {
+            pm.getInstallerPackageName(pkgName)
+        } catch (_: Exception) {
+            null
         }
 
-        // 🧩 Step 4: Sideloaded or other installer
-        if (installer.isNullOrEmpty()) {
-            if (trustedApps.containsKey(pkgName)) {
-                val risk = scoreRisk(effectivePermissions)
-                return risk to trustedApps[pkgName]!!
-            }
-            val risk = scoreRisk(effectivePermissions)
-            return risk to "Unknown (Sideloaded)"
+        val (risk, reason) = scoreRisk(effectivePermissions)
+
+        // 🧠 Source explanation
+        val source = when {
+            installer == null -> "Unknown (Sideloaded)"
+            trustedStores.containsKey(installer) -> "Trusted (via ${trustedStores[installer]})"
+            installer.contains("samsung", true) -> "Trusted (Samsung Store)"
+            installer.contains("huawei", true) -> "Trusted (Huawei AppGallery)"
+            else -> "Unverified Source ($installer)"
         }
 
-        // Default
-        val risk = scoreRisk(effectivePermissions)
-        return risk to "Unknown"
+        return risk to "$source • $reason"
     }
 
     /**
-     * Compute risk score based ONLY on granted permissions.
+     * 🧩 Weighted scoring with corrected “Safe” classification.
      */
-    private fun scoreRisk(permissions: List<String>): String {
-        var score = 0
-        permissions.filterNotNull().forEach { p ->
+    private fun scoreRisk(permissions: List<String>): Pair<String, String> {
+        if (permissions.isEmpty()) {
+            return "Safe (no permissions)" to "No permissions requested"
+        }
+
+        var score = 0.0
+        var hasCritical = false
+        var hasMedium = false
+        val analyzed = permissions.map { it.uppercase() }
+
+        val foundCritical = mutableListOf<String>()
+        val foundMedium = mutableListOf<String>()
+
+        analyzed.forEach { p ->
             when {
-                high.any { p.uppercase().contains(it) } -> score += 3
-                medium.any { p.uppercase().contains(it) } -> score += 2
+                criticalPerms.any { p.contains(it) } -> {
+                    score += 12.5
+                    hasCritical = true
+                    foundCritical.add(p)
+                }
+                mediumPerms.any { p.contains(it) } -> {
+                    score += 6.5
+                    hasMedium = true
+                    foundMedium.add(p)
+                }
+                lowPerms.any { p.contains(it) } -> score += 1.0
             }
         }
 
-        return when {
-            score >= 7 -> "High Risk (granted)"
-            score in 3..6 -> "Medium Risk (granted)"
-            score in 1..2 -> "Low Risk (granted)"
-            else -> "Safe (no sensitive permissions allowed)"
+        // 🧩 Combo risk boost (e.g. Internet + Camera/Mic/Location)
+        val hasInternet = analyzed.any { it.contains("INTERNET") }
+        val hasCamera = analyzed.any { it.contains("CAMERA") }
+        val hasMic = analyzed.any { it.contains("RECORD_AUDIO") }
+        val hasLocation = analyzed.any { it.contains("LOCATION") }
+
+        if (hasInternet && (hasCamera || hasMic || hasLocation)) {
+            score += 10
         }
+
+        val finalScore = score.coerceIn(0.0, 100.0)
+
+        // 🟩 FIX: Correct “Safe” detection logic
+        val risk = when {
+            hasCritical -> "High Risk (granted)"
+            hasMedium -> "Medium Risk (granted)"
+            finalScore in 10.0..29.9 -> "Low Risk (granted)"
+            !hasCritical && !hasMedium -> "Safe (no sensitive permissions)"
+            else -> "Safe (no sensitive permissions)"
+        }
+
+        // 🧾 Detailed reason
+        val reason = when {
+            hasCritical -> "Accesses sensitive user data or sensors (${foundCritical.take(3).joinToString(", ")})"
+            hasMedium -> "Uses camera, storage, or phone state (${foundMedium.take(3).joinToString(", ")})"
+            hasInternet -> "Internet access only (no sensitive data)"
+            else -> "No privacy-related permissions detected"
+        }
+
+        return risk to reason
     }
 }
-
-

@@ -12,7 +12,14 @@
     <!-- Outline for light mode -->
     <color name="colorOutline">#33000000</color> <!-- semi-dark gray -->
 
-    <!-- Adaptive colors -->
+    <!-- Adaptive colors for cards -->
+    <color name="colorSurface">#FFFFFFFF</color> <!-- white background -->
+    <color name="colorOutlineVariant">#DDDDDD</color> <!-- light gray border -->
+
+    <!-- Text colors -->
     <color name="text_primary">?android:attr/textColorPrimary</color>
     <color name="text_secondary">?android:attr/textColorSecondary</color>
+    <color name="cardBackgroundColor">#FFFFFFFF</color>  <!-- White -->
+    <color name="cardStrokeColor">#22000000</color>      <!-- Light gray outline -->
+
 </resources>

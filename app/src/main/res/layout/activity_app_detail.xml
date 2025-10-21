@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
+    android:background="?android:attr/windowBackground"
     android:fadeScrollbars="false">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="10dp">
 
-        <!-- Header card: icon, name, package, source, risk -->
+        <!-- 🔹 App info card -->
         <LinearLayout
             android:id="@+id/headerCard"
             android:layout_width="match_parent"
@@ -18,15 +20,16 @@
             android:orientation="horizontal"
             android:padding="16dp"
             android:background="@drawable/card_background"
-            android:elevation="2dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="20dp"
+            android:elevation="3dp"
+            android:layout_marginTop="55dp"
+            android:layout_marginBottom="10dp"
             android:clipToOutline="true">
 
             <ImageView
                 android:id="@+id/ivAppIcon"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
+                android:layout_gravity="center_vertical"
                 android:contentDescription="App Icon"
                 android:scaleType="centerInside"
                 android:src="@mipmap/ic_launcher" />
@@ -38,7 +41,6 @@
                 android:layout_marginStart="12dp"
                 android:orientation="vertical">
 
-                <!-- App Name -->
                 <TextView
                     android:id="@+id/tvAppName"
                     android:layout_width="wrap_content"
@@ -47,7 +49,6 @@
                     android:textStyle="bold"
                     android:textColor="?android:attr/textColorPrimary" />
 
-                <!-- Package Name -->
                 <TextView
                     android:id="@+id/tvPackageName"
                     android:layout_width="wrap_content"
@@ -55,31 +56,51 @@
                     android:textSize="12sp"
                     android:layout_marginTop="2dp"
                     android:textColor="?android:attr/textColorSecondary" />
-
-                <!-- Source -->
-                <TextView
-                    android:id="@+id/tvSource"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Source: Unknown"
-                    android:textColor="@android:color/darker_gray"
-                    android:textSize="13sp"
-                    android:layout_marginTop="4dp" />
-
-                <!-- Risk Label -->
-                <TextView
-                    android:id="@+id/tvRisk"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="8dp"
-                    android:padding="6dp"
-                    android:textColor="?android:attr/textColorPrimary" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Permissions Section -->
+        <!-- 🟩 Risk Info Card -->
+        <LinearLayout
+            android:id="@+id/riskInfoCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:padding="16dp"
+            android:layout_marginBottom="12dp"
+            android:elevation="2dp">
+
+            <TextView
+                android:id="@+id/tvRisk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🟢 Safe"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="?android:attr/textColorPrimary"
+                android:paddingBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tvSource"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Source: Unknown"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="13sp"
+                android:paddingBottom="2dp" />
+
+            <TextView
+                android:id="@+id/tvReason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Reason: No additional context"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="13sp"
+                android:fontFamily="sans-serif-light"
+                android:textStyle="italic" />
+        </LinearLayout>
+
+        <!-- 🔸 Permissions Section -->
         <TextView
             android:id="@+id/tvPermissionsTitle"
             android:layout_width="match_parent"
@@ -88,6 +109,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="?android:attr/textColorPrimary"
+            android:layout_marginTop="4dp"
             android:layout_marginBottom="2dp" />
 
         <TextView
@@ -99,7 +121,6 @@
             android:textColor="?android:attr/textColorSecondary"
             android:layout_marginBottom="8dp" />
 
-        <!-- Permissions list -->
         <TextView
             android:id="@+id/tvPermissions"
             android:layout_width="match_parent"
@@ -109,14 +130,13 @@
             android:textColor="?android:attr/textColorPrimary"
             android:paddingBottom="8dp" />
 
-        <!-- Divider -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@android:color/darker_gray"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="8dp" />
 
-        <!-- Buttons -->
+        <!-- 🔘 Buttons -->
         <Button
             android:id="@+id/btnSettings"
             android:layout_width="match_parent"
@@ -124,7 +144,8 @@
             android:text="Open App Settings"
             android:backgroundTint="@color/purple_700"
             android:textColor="@android:color/white"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginBottom="8dp"
+            android:elevation="2dp" />
 
         <Button
             android:id="@+id/btnTrust"
@@ -133,10 +154,7 @@
             android:text="Trust This App"
             android:backgroundTint="@color/teal_700"
             android:textColor="@android:color/white"
-            android:layout_marginBottom="30dp"/>
-
+            android:elevation="2dp"
+            android:layout_marginBottom="60dp" />
     </LinearLayout>
 </ScrollView>
-
-
-
