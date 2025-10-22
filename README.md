@@ -18,10 +18,6 @@ The goal is to give users better visibility into what apps are installed on thei
     <img src="https://img.shields.io/badge/Get%20it%20on-GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="Get it on GitHub">
   </a>
   <br/>
-  <a href="obtainium://github.com/xabd/PrivacyScanner">
-    <img src="https://img.shields.io/badge/Get%20it%20on-Obtainium-5E2E91?style=for-the-badge&logo=obtainium&logoColor=white" alt="Get it on Obtainium">
-  </a>
-  <br/>
   <a href="https://f-droid.org/packages/nodomain.xabd.privacyscanner">
     <img src="https://img.shields.io/badge/Get%20it%20on-F--Droid-1976D2?style=for-the-badge&logo=fdroid&logoColor=white" alt="Get it on F-Droid">
   </a>
@@ -38,6 +34,29 @@ The goal is to give users better visibility into what apps are installed on thei
 
 ---
 
+## 📲 Install via Obtainium
+
+You can also install and update **PrivacyScanner** easily using **[Obtainium](https://apps.obtainium.im/)** — a privacy-respecting app store that fetches apps directly from their official source (like GitHub).  
+
+### 🧭 Steps to Install:
+
+1. Download and install **Obtainium** from its official website:  
+   👉 [https://apps.obtainium.im/](https://apps.obtainium.im/)
+
+2. Open the Obtainium app and tap **➕ Add App**.  
+
+3. Choose **Source Type:** `GitHub`.  
+
+4. In the **Source URL** field, paste this link:  
+https://github.com/xabd/PrivacyScanner
+
+yaml
+Copier le code
+
+5. Tap **Add**, and Obtainium will automatically detect the app, fetch releases, and keep it updated for you.
+
+---
+
 ## ☕ Support Development  
 
 If you like PrivacyScanner, you can support me here:  
@@ -50,10 +69,10 @@ Your support helps keep this open-source project alive 💚
 ## 📸 Screenshots  
 
 <p align="center">
-  <img src="metadata/en-US/images/phoneScreenshots/A.jpg" width="200" />
-  <img src="metadata/en-US/images/phoneScreenshots/B.jpg" width="200" />
-  <img src="metadata/en-US/images/phoneScreenshots/C.jpg" width="200" />
-  <img src="metadata/en-US/images/phoneScreenshots/D.jpg" width="200" />
+<img src="metadata/en-US/images/phoneScreenshots/A.jpg" width="200" />
+<img src="metadata/en-US/images/phoneScreenshots/B.jpg" width="200" />
+<img src="metadata/en-US/images/phoneScreenshots/C.jpg" width="200" />
+<img src="metadata/en-US/images/phoneScreenshots/D.jpg" width="200" />
 </p>
 
 ---
@@ -61,7 +80,6 @@ Your support helps keep this open-source project alive 💚
 ## 🛠️ Build Instructions  
 
 1. Clone this repository:
-   ```bash
-   git clone https://github.com/xabd/PrivacyScanner.git
-   cd PrivacyScanner
-
+```bash
+git clone https://github.com/xabd/PrivacyScanner.git
+cd PrivacyScanner
