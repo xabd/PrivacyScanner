@@ -3,6 +3,7 @@
 PrivacyScanner is an Android app built with **Kotlin** that scans installed applications and helps you review their privacy-related details.  
 
 The goal is to give users better visibility into what apps are installed on their device.  
+
 - ✅ 100% Free  
 - ✅ No ads  
 - ✅ No trackers  
@@ -17,7 +18,7 @@ The goal is to give users better visibility into what apps are installed on thei
     <img src="https://img.shields.io/badge/Get%20it%20on-GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="Get it on GitHub">
   </a>
   <br/>
-  <a href="https://apps.obtainium.im/apk/nodomain.xabd.privacyscanner">
+  <a href="obtainium://github.com/xabd/PrivacyScanner">
     <img src="https://img.shields.io/badge/Get%20it%20on-Obtainium-5E2E91?style=for-the-badge&logo=obtainium&logoColor=white" alt="Get it on Obtainium">
   </a>
   <br/>
@@ -33,9 +34,8 @@ The goal is to give users better visibility into what apps are installed on thei
 📊 **Downloads:**  
 ![GitHub all releases](https://img.shields.io/github/downloads/xabd/PrivacyScanner/total?label=Total%20Downloads&logo=github&color=brightgreen)
 
-
-
 [<img src="https://shields.rbtlog.dev/simple/nodomain.xabd.privacyscanner" alt="RB Status">](https://shields.rbtlog.dev/nodomain.xabd.privacyscanner)
+
 ---
 
 ## ☕ Support Development  
