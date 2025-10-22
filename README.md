@@ -50,9 +50,6 @@ You can also install and update **PrivacyScanner** easily using **[Obtainium](ht
 4. In the **Source URL** field, paste this link:  
 https://github.com/xabd/PrivacyScanner
 
-yaml
-Copier le code
-
 5. Tap **Add**, and Obtainium will automatically detect the app, fetch releases, and keep it updated for you.
 
 ---
