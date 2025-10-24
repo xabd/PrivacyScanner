@@ -41,7 +41,7 @@ You can also install and update **PrivacyScanner** easily using **[Obtainium](ht
 ### 🧭 Steps to Install:
 
 1. Download and install **Obtainium** from its official website:  
-   👉 [https://apps.obtainium.im/](https://apps.obtainium.im/)
+   👉 [https://obtainium.imranr.dev](https://obtainium.imranr.dev)
 
 2. Open the Obtainium app and tap **➕ Add App**.  
 
