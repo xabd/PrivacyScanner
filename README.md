@@ -66,10 +66,10 @@ Your support helps keep this open-source project alive 💚
 ## 📸 Screenshots  
 
 <p align="center">
-<img src="metadata/en-US/images/phoneScreenshots/A.jpg" width="200" />
-<img src="metadata/en-US/images/phoneScreenshots/B.jpg" width="200" />
-<img src="metadata/en-US/images/phoneScreenshots/C.jpg" width="200" />
-<img src="metadata/en-US/images/phoneScreenshots/D.jpg" width="200" />
+<img src="screenshots/screenshot1.jpg" width="200" />
+<img src="screenshots/screenshot2.jpg" width="200" />
+<img src="screenshots/screenshot3.jpg" width="200" />
+<img src="screenshots/screenshot4.jpg" width="200" />
 </p>
 
 ---
