@@ -73,6 +73,13 @@ Your support helps keep this open-source project alive 💚
 </p>
 
 ---
+## 🌐 Community
+
+Join our Reddit community:  
+👉 **[r/DigitalEscapeTools](https://www.reddit.com/r/DigitalEscapeTools/)**
+
+A place to share open-source tools, privacy-friendly alternatives, de-Googling resources, and ways to regain control over your digital life.
+---
 
 ## 🛠️ Build Instructions  
 
