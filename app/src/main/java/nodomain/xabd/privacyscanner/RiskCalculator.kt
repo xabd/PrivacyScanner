@@ -8,6 +8,7 @@ object RiskCalculator {
     // 🟩 Trusted app stores
     private val trustedStores = mapOf(
         "org.fdroid.fdroid" to "F-Droid",
+        "org.fdroid.basic" to "F-Droid Basic",
         "com.android.vending" to "Google Play",
         "com.aurora.store" to "Aurora Store",
         "com.izzyondroid.installer" to "IzzyOnDroid",
