@@ -1,5 +1,4 @@
 HEAD
-*.iml
 .gradle
 /local.properties
 /.idea/caches
@@ -13,7 +12,6 @@ HEAD
 /captures
 .externalNativeBuild
 .cxx
-local.properties
 
 # Gradle files
 .gradle/
