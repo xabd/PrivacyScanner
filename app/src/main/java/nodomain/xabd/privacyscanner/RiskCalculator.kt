@@ -10,7 +10,11 @@ object RiskCalculator {
         "org.fdroid.fdroid" to "F-Droid",
         "com.android.vending" to "Google Play",
         "com.aurora.store" to "Aurora Store",
-        "com.izzyondroid.installer" to "IzzyOnDroid"
+        "com.izzyondroid.installer" to "IzzyOnDroid",
+        "dev.imranr.obtainium" to "Obtainium",
+        "com.looker.droidify" to "Droid-ify",
+        "com.machiav3lli.fdroid" to "Neo Store",
+        "com.google.android.packageinstaller" to "Default Installer (Google)"
     )
 
     // 🟩 Trusted apps
@@ -24,12 +28,12 @@ object RiskCalculator {
     private val criticalPerms = listOf(
         "READ_SMS", "SEND_SMS", "RECEIVE_SMS", "READ_CONTACTS", "WRITE_CONTACTS",
         "RECORD_AUDIO", "RECORD_VIDEO", "CALL_PHONE", "READ_CALL_LOG", "WRITE_CALL_LOG",
-        "READ_CALENDAR", "WRITE_CALENDAR", "ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"
+        "READ_CALENDAR", "WRITE_CALENDAR", "ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION",
     )
 
     // 🟧 Medium-risk permissions
     private val mediumPerms = listOf(
-        "CAMERA", "READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE",
+        "CAMERA", "READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE", "QUERY_ALL_PACKAGES",
         "READ_PHONE_STATE", "BODY_SENSORS", "ACCESS_WIFI_STATE", "ACCESS_NETWORK_STATE"
     )
 
