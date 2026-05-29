@@ -137,4 +137,3 @@ class AppAdapter(private var apps: List<AppInfo>) :
         notifyDataSetChanged()
     }
 }
-

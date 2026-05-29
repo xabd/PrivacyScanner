@@ -38,8 +38,6 @@
         <!-- Other Activities -->
         <activity android:name="nodomain.xabd.privacyscanner.AppDetailActivity"/>
 
-
     </application>
 
 </manifest>
-
