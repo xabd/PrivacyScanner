@@ -15,7 +15,6 @@
 
         <!-- Edge-to-edge support -->
         <item name="android:fitsSystemWindows">false</item>
-        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
 
@@ -25,7 +24,6 @@
 
         <!-- Light system bars (dark icons) -->
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowLightNavigationBar">true</item>
     </style>
 
 </resources>

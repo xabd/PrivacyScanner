@@ -1,5 +1,6 @@
 package nodomain.xabd.privacyscanner
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
@@ -10,9 +11,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import java.util.Locale
+import androidx.core.graphics.toColorInt
 
 class AppAdapter(private var apps: List<AppInfo>) :
     RecyclerView.Adapter<AppAdapter.AppViewHolder>() {
@@ -41,7 +42,7 @@ class AppAdapter(private var apps: List<AppInfo>) :
         holder.pkg.text = app.packageName
 
         // Normalize label for robust color detection
-        val label = (app.riskLevel ?: "").lowercase(Locale.getDefault())
+        val label = (app.riskLevel).lowercase(Locale.getDefault())
 
         // 🧩 Risk emoji mapping
         val emoji = when {
@@ -54,7 +55,7 @@ class AppAdapter(private var apps: List<AppInfo>) :
         }
 
         // Risk + Source text
-        val displayRisk = if (app.source.isNullOrBlank())
+        val displayRisk = if (app.source.isBlank())
             "$emoji ${app.riskLevel}"
         else
             "$emoji ${app.riskLevel} • ${app.source}"
@@ -67,46 +68,46 @@ class AppAdapter(private var apps: List<AppInfo>) :
 
         when {
             label.contains("high") -> {
-                textColor = Color.parseColor("#E53935") // strong red
+                textColor = "#E53935".toColorInt() // strong red
                 backgroundColor = if (isDarkMode)
-                    Color.parseColor("#33FF5252")
+                    "#33FF5252".toColorInt()
                 else
-                    Color.parseColor("#FFFFEBEE")
+                    "#FFFFEBEE".toColorInt()
             }
             label.contains("medium") -> {
-                textColor = Color.parseColor("#FB8C00") // amber
+                textColor = "#FB8C00".toColorInt() // amber
                 backgroundColor = if (isDarkMode)
-                    Color.parseColor("#33FFA000")
+                    "#33FFA000".toColorInt()
                 else
-                    Color.parseColor("#FFFFF3E0")
+                    "#FFFFF3E0".toColorInt()
             }
             label.contains("low") -> {
-                textColor = Color.parseColor("#FFD54F") // yellow accent
+                textColor = "#FFD54F".toColorInt() // yellow accent
                 backgroundColor = if (isDarkMode)
-                    Color.parseColor("#33FFD54F")
+                    "#33FFD54F".toColorInt()
                 else
-                    Color.parseColor("#FFFFF8E1")
+                    "#FFFFF8E1".toColorInt()
             }
             label.contains("safe") -> {
-                textColor = Color.parseColor("#43A047") // ✅ dark green
+                textColor = "#43A047".toColorInt() // ✅ dark green
                 backgroundColor = if (isDarkMode)
-                    Color.parseColor("#334CAF50")
+                    "#334CAF50".toColorInt()
                 else
-                    Color.parseColor("#FFE8F5E9") // pale green background for light mode
+                    "#FFE8F5E9".toColorInt() // pale green background for light mode
             }
             label.contains("trusted") -> {
-                textColor = Color.parseColor("#1976D2") // blue
+                textColor = "#1976D2".toColorInt() // blue
                 backgroundColor = if (isDarkMode)
-                    Color.parseColor("#331976D2")
+                    "#331976D2".toColorInt()
                 else
-                    Color.parseColor("#FFE3F2FD")
+                    "#FFE3F2FD".toColorInt()
             }
             else -> {
                 textColor = if (isDarkMode) Color.LTGRAY else Color.DKGRAY
                 backgroundColor = if (isDarkMode)
-                    Color.parseColor("#222222")
+                    "#222222".toColorInt()
                 else
-                    Color.parseColor("#FFF5F5F5")
+                    "#FFF5F5F5".toColorInt()
             }
         }
 
@@ -130,6 +131,7 @@ class AppAdapter(private var apps: List<AppInfo>) :
 
     override fun getItemCount(): Int = apps.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newList: List<AppInfo>) {
         apps = newList
         notifyDataSetChanged()

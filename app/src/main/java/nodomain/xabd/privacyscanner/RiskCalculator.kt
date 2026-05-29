@@ -1,7 +1,7 @@
 package nodomain.xabd.privacyscanner
 
 import android.content.Context
-import android.content.pm.PackageManager
+import android.os.Build
 
 object RiskCalculator {
 
@@ -68,7 +68,12 @@ object RiskCalculator {
 
         // ✅ 3. Determine installer source
         val installer = try {
-            pm.getInstallerPackageName(pkgName)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                pm.getInstallSourceInfo(pkgName).installingPackageName
+            } else {
+                @Suppress("DEPRECATION")
+                pm.getInstallerPackageName(pkgName)
+            }
         } catch (_: Exception) {
             null
         }
@@ -136,7 +141,6 @@ object RiskCalculator {
             hasCritical -> "High Risk (granted)"
             hasMedium -> "Medium Risk (granted)"
             finalScore in 10.0..29.9 -> "Low Risk (granted)"
-            !hasCritical && !hasMedium -> "Safe (no sensitive permissions)"
             else -> "Safe (no sensitive permissions)"
         }
 
