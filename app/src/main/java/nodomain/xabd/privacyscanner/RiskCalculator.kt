@@ -11,10 +11,13 @@ object RiskCalculator {
         "com.android.vending" to "Google Play",
         "com.aurora.store" to "Aurora Store",
         "com.izzyondroid.installer" to "IzzyOnDroid",
-        "dev.imranr.obtainium" to "Obtainium",
         "com.looker.droidify" to "Droid-ify",
         "com.machiav3lli.fdroid" to "Neo Store",
-        "com.google.android.packageinstaller" to "Default Installer (Google)"
+    )
+
+    private val otherKnownInstallers = mapOf(
+        "dev.imranr.obtainium" to "Obtainium",
+        "com.google.android.packageinstaller" to "Default Installer (Google)",
     )
 
     // 🟩 Trusted apps
@@ -88,6 +91,7 @@ object RiskCalculator {
         val source = when {
             installer == null -> "Unknown (Sideloaded)"
             trustedStores.containsKey(installer) -> "Trusted (via ${trustedStores[installer]})"
+            otherKnownInstallers.containsKey(installer) -> "Known (via ${otherKnownInstallers[installer]})"
             installer.contains("samsung", true) -> "Trusted (Samsung Store)"
             installer.contains("huawei", true) -> "Trusted (Huawei AppGallery)"
             else -> "Unverified Source ($installer)"
