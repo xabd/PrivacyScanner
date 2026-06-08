@@ -90,7 +90,7 @@ class MainActivity : BaseActivity() {
         btnScan.setOnClickListener { loadInstalledApps() }
 
         btnWebsite.setOnClickListener {
-            val url = "https://digital-escape-tools.vercel.app"
+            val url = "https://digitalescapetools.com/"
             startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
         }
 
