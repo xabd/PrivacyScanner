@@ -4,15 +4,19 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
+import androidx.core.net.toUri
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 
 class MainActivity : BaseActivity() {
 
@@ -32,12 +36,24 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // 🌙 Follow system dark mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val root = findViewById<View>(R.id.rootLayout)
+
+        ViewCompat.setOnApplyWindowInsetsListener(root) { view, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.updatePadding(
+                top = bars.top,
+                bottom = bars.bottom
+            )
+            insets
+        }
+
         // 🟪 Header title
         txtHeader = findViewById(R.id.txtHeader)
-        txtHeader.text = "PrivacyScanner"
+        txtHeader.text = getString(R.string.app_name)
 
         // 🆕 Info icon (menu)
         ivInfo = findViewById(R.id.ivInfo)
@@ -75,7 +91,7 @@ class MainActivity : BaseActivity() {
 
         btnWebsite.setOnClickListener {
             val url = "https://digital-escape-tools.vercel.app"
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
         }
 
         chkSystemApps.setOnCheckedChangeListener { _, isChecked ->
@@ -85,7 +101,7 @@ class MainActivity : BaseActivity() {
     }
 
     private fun openLink(url: String) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        val intent = Intent(Intent.ACTION_VIEW, url.toUri())
         startActivity(intent)
     }
 
@@ -94,7 +110,7 @@ class MainActivity : BaseActivity() {
         txtLoading.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
         btnScan.isEnabled = false
-        txtLoading.text = "Scanning installed apps, please wait..."
+        txtLoading.text = getString(R.string.scanning_installed_apps_please_wait)
 
         CoroutineScope(Dispatchers.IO).launch {
             val pm = packageManager
@@ -126,7 +142,8 @@ class MainActivity : BaseActivity() {
 
                     if (index % 15 == 0) {
                         withContext(Dispatchers.Main) {
-                            txtLoading.text = "Scanning... (${index + 1}/${apps.size})"
+                            txtLoading.text =
+                                getString(R.string.scanning_action_label, index + 1, apps.size)
                         }
                     }
 
@@ -177,7 +194,11 @@ class MainActivity : BaseActivity() {
                 .thenBy { it.name.lowercase() }
         )
         appAdapter.updateData(sorted)
-        txtLoading.text = "Showing ${sorted.size} apps"
+        txtLoading.text = resources.getQuantityString(
+            R.plurals.showing_apps_label,
+            sorted.size,
+            sorted.size
+        )
     }
 
     private fun isSystemApp(app: ApplicationInfo) =

@@ -7,7 +7,6 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
-import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.text.SpannableStringBuilder
@@ -18,6 +17,9 @@ import android.text.style.StyleSpan
 import android.util.Log
 import android.widget.*
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
+import androidx.core.net.toUri
+import androidx.core.content.edit
 
 class AppDetailActivity : BaseActivity() {
 
@@ -93,9 +95,9 @@ class AppDetailActivity : BaseActivity() {
 
         tvAppName.text = appLabel
         tvPackageName.text = pkgName
-        tvRisk.text = "$riskEmoji  $risk"
-        tvSource.text = "Source: $source"
-        tvReason.text = "Reason: $reason"
+        tvRisk.text = getString(R.string.textview_showing_risk, riskEmoji, risk)
+        tvSource.text = getString(R.string.textview_source, source)
+        tvReason.text = getString(R.string.textview_reason, reason)
 
         applyRiskColor(risk, animate = false)
         updateTrustButton()
@@ -109,7 +111,7 @@ class AppDetailActivity : BaseActivity() {
         )
 
         if (grantedMap.isEmpty()) {
-            tvPermissions.text = "No permissions found."
+            tvPermissions.text = getString(R.string.textview_no_permissions_found)
         } else {
             sb.append("Permissions:\n\n")
             grantedMap.forEach { (perm, granted) ->
@@ -117,9 +119,9 @@ class AppDetailActivity : BaseActivity() {
                 sb.append("• $perm ")
                 val statusText = if (granted) "(Allowed)" else "(Not allowed)"
                 val statusColor = if (granted)
-                    Color.parseColor("#4CAF50")
+                    "#4CAF50".toColorInt()
                 else
-                    Color.parseColor("#D32F2F")
+                    "#D32F2F".toColorInt()
 
                 val statusStart = sb.length
                 sb.append(statusText)
@@ -142,7 +144,7 @@ class AppDetailActivity : BaseActivity() {
         // 🔹 Buttons
         btnSettings.setOnClickListener {
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                data = Uri.parse("package:$pkgName")
+                data = "package:$pkgName".toUri()
             }
             startActivity(intent)
         }
@@ -151,18 +153,22 @@ class AppDetailActivity : BaseActivity() {
             val prefs = getSharedPreferences("trusted_apps", MODE_PRIVATE)
             val trusted = prefs.getBoolean(pkgName, false)
             if (trusted) {
-                prefs.edit().remove(pkgName).apply()
+                prefs.edit { remove(pkgName) }
                 Toast.makeText(this, "$appLabel removed from Trusted", Toast.LENGTH_SHORT).show()
             } else {
-                prefs.edit().putBoolean(pkgName, true).apply()
+                prefs.edit { putBoolean(pkgName, true) }
                 Toast.makeText(this, "$appLabel marked as Trusted", Toast.LENGTH_SHORT).show()
             }
 
             val (newRisk, newSourceReason) = RiskCalculator.calculate(this, pkgName, grantedPermissions)
             val newSplit = newSourceReason.split("•", limit = 2)
-            tvRisk.text = "$riskEmoji $newRisk"
-            tvSource.text = "Source: ${newSplit.getOrNull(0)?.trim() ?: "Unknown"}"
-            tvReason.text = "Reason: ${newSplit.getOrNull(1)?.trim() ?: "No context"}"
+            tvRisk.text = getString(R.string.textview_risk_text, riskEmoji, newRisk)
+            tvSource.text =
+                getString(R.string.textview_source_text, newSplit.getOrNull(0)?.trim() ?: "Unknown")
+            tvReason.text = getString(
+                R.string.textview_reason_text,
+                newSplit.getOrNull(1)?.trim() ?: "No context"
+            )
 
             applyRiskColor(newRisk, animate = true)
             updateTrustButton()
@@ -183,28 +189,28 @@ class AppDetailActivity : BaseActivity() {
 
         when {
             label.contains("high") -> {
-                colorText = Color.parseColor("#FF5252") // red
-                colorCard = Color.parseColor("#33FF5252")
+                colorText = "#FF5252".toColorInt() // red
+                colorCard = "#33FF5252".toColorInt()
             }
             label.contains("medium") -> {
-                colorText = Color.parseColor("#FFA000") // orange
-                colorCard = Color.parseColor("#33FFA000")
+                colorText = "#FFA000".toColorInt() // orange
+                colorCard = "#33FFA000".toColorInt()
             }
             label.contains("low") -> {
-                colorText = Color.parseColor("#FFEB3B") // yellow
-                colorCard = Color.parseColor("#33FFEB3B")
+                colorText = "#FFEB3B".toColorInt() // yellow
+                colorCard = "#33FFEB3B".toColorInt()
             }
             label.contains("safe") -> {
-                colorText = Color.parseColor("#00C853") // ✅ pure green (brighter)
-                colorCard = Color.parseColor("#3300C853")
+                colorText = "#00C853".toColorInt() // ✅ pure green (brighter)
+                colorCard = "#3300C853".toColorInt()
             }
             label.contains("trusted") -> {
-                colorText = Color.parseColor("#2196F3") // blue
-                colorCard = Color.parseColor("#332196F3")
+                colorText = "#2196F3".toColorInt() // blue
+                colorCard = "#332196F3".toColorInt()
             }
             else -> {
-                colorText = Color.parseColor("#9E9E9E") // gray
-                colorCard = Color.parseColor("#222222")
+                colorText = "#9E9E9E".toColorInt() // gray
+                colorCard = "#222222".toColorInt()
             }
         }
 

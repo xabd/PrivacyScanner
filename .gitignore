@@ -1,5 +1,4 @@
 HEAD
-*.iml
 .gradle
 /local.properties
 /.idea/caches
@@ -13,7 +12,6 @@ HEAD
 /captures
 .externalNativeBuild
 .cxx
-local.properties
 
 # Gradle files
 .gradle/
@@ -50,3 +48,5 @@ google-services.json
 # Android Profiling
 *.hprof
  d089197d5fae85f3d353356e3ef8b6c172bda03e
+
+ /.kotlin

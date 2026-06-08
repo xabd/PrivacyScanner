@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">PrivacyScanner</string>
+    <string name="scanning_installed_apps_please_wait">Scanning installed apps, please wait…</string>
+    <string name="scanning_action_label">Scanning… (%1$d/%2$d)</string>
+    <plurals name="showing_apps_label">
+        <item quantity="one">Showing %1$d app</item>
+        <item quantity="other">Showing %1$d apps</item>
+    </plurals>
+    <string name="textview_showing_risk">%1$s  %2$s</string>
+    <string name="textview_source">Source: %1$s</string>
+    <string name="textview_reason">Reason: %1$s</string>
+    <string name="textview_no_permissions_found">No permissions found.</string>
+    <string name="textview_risk_text">%1$s %2$s</string>
+    <string name="textview_source_text">Source: %1$s</string>
+    <string name="textview_reason_text">Reason: %1$s</string>
+    <string name="app_icon_content_description">App icon</string>
+    <string name="info_more_options_content_description">More options</string>
+    <string name="button_scan_apps_text">Scan Apps</string>
+    <string name="button_open_website_text">Open Website</string>
+    <string name="checkbox_show_system_apps_text">Show system apps</string>
+    <string name="textview_scanning_apps_text">Scanning apps…</string>
 </resources>

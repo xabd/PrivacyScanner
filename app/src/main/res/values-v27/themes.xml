@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
-    <!-- Base application theme -->
     <style name="Theme.PrivacyScanner" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary colors -->
         <item name="colorPrimary">@color/purple_500</item>
@@ -15,6 +14,7 @@
 
         <!-- Edge-to-edge support -->
         <item name="android:fitsSystemWindows">false</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
 
@@ -24,6 +24,6 @@
 
         <!-- Light system bars (dark icons) -->
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
     </style>
-
 </resources>

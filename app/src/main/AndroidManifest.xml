@@ -4,7 +4,10 @@
     package="nodomain.xabd.privacyscanner">
 
     <!-- Permissions -->
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="PackageVisibilityPolicy, QueryAllPackagesPermission"
+    />
 
     <application
         android:allowBackup="true"
@@ -17,7 +20,8 @@
         android:theme="@style/Theme.PrivacyScanner"
         android:enableOnBackInvokedCallback="true"
         android:allowNativeHeapPointerTagging="false"
-        android:usesNonSdkApi="false">
+        android:usesNonSdkApi="false"
+        tools:targetApi="33">
 
         <!-- Main Activity -->
         <activity
@@ -34,8 +38,6 @@
         <!-- Other Activities -->
         <activity android:name="nodomain.xabd.privacyscanner.AppDetailActivity"/>
 
-
     </application>
 
 </manifest>
-

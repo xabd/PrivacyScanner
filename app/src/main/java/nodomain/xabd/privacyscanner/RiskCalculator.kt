@@ -1,16 +1,24 @@
 package nodomain.xabd.privacyscanner
 
 import android.content.Context
-import android.content.pm.PackageManager
+import android.os.Build
 
 object RiskCalculator {
 
     // 🟩 Trusted app stores
     private val trustedStores = mapOf(
         "org.fdroid.fdroid" to "F-Droid",
+        "org.fdroid.basic" to "F-Droid Basic",
         "com.android.vending" to "Google Play",
         "com.aurora.store" to "Aurora Store",
-        "com.izzyondroid.installer" to "IzzyOnDroid"
+        "com.izzyondroid.installer" to "IzzyOnDroid",
+        "com.looker.droidify" to "Droid-ify",
+        "com.machiav3lli.fdroid" to "Neo Store",
+    )
+
+    private val otherKnownInstallers = mapOf(
+        "dev.imranr.obtainium" to "Obtainium",
+        "com.google.android.packageinstaller" to "Default Installer (Google)",
     )
 
     // 🟩 Trusted apps
@@ -24,12 +32,12 @@ object RiskCalculator {
     private val criticalPerms = listOf(
         "READ_SMS", "SEND_SMS", "RECEIVE_SMS", "READ_CONTACTS", "WRITE_CONTACTS",
         "RECORD_AUDIO", "RECORD_VIDEO", "CALL_PHONE", "READ_CALL_LOG", "WRITE_CALL_LOG",
-        "READ_CALENDAR", "WRITE_CALENDAR", "ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"
+        "READ_CALENDAR", "WRITE_CALENDAR", "ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION",
     )
 
     // 🟧 Medium-risk permissions
     private val mediumPerms = listOf(
-        "CAMERA", "READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE",
+        "CAMERA", "READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE", "QUERY_ALL_PACKAGES",
         "READ_PHONE_STATE", "BODY_SENSORS", "ACCESS_WIFI_STATE", "ACCESS_NETWORK_STATE"
     )
 
@@ -68,7 +76,12 @@ object RiskCalculator {
 
         // ✅ 3. Determine installer source
         val installer = try {
-            pm.getInstallerPackageName(pkgName)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                pm.getInstallSourceInfo(pkgName).installingPackageName
+            } else {
+                @Suppress("DEPRECATION")
+                pm.getInstallerPackageName(pkgName)
+            }
         } catch (_: Exception) {
             null
         }
@@ -79,6 +92,7 @@ object RiskCalculator {
         val source = when {
             installer == null -> "Unknown (Sideloaded)"
             trustedStores.containsKey(installer) -> "Trusted (via ${trustedStores[installer]})"
+            otherKnownInstallers.containsKey(installer) -> "Known (via ${otherKnownInstallers[installer]})"
             installer.contains("samsung", true) -> "Trusted (Samsung Store)"
             installer.contains("huawei", true) -> "Trusted (Huawei AppGallery)"
             else -> "Unverified Source ($installer)"
@@ -136,7 +150,6 @@ object RiskCalculator {
             hasCritical -> "High Risk (granted)"
             hasMedium -> "Medium Risk (granted)"
             finalScore in 10.0..29.9 -> "Low Risk (granted)"
-            !hasCritical && !hasMedium -> "Safe (no sensitive permissions)"
             else -> "Safe (no sensitive permissions)"
         }
 

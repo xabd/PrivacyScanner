@@ -1,13 +1,13 @@
-# 🔒 PrivacyScanner  
+# 🔒 PrivacyScanner
 
-PrivacyScanner is an Android app built with **Kotlin** that scans installed applications and helps you review their privacy-related details.  
+PrivacyScanner is an Android app built with **Kotlin** that scans installed applications and helps you review their privacy-related details.
 
-The goal is to give users better visibility into what apps are installed on their device.  
+The goal is to give users better visibility into what apps are installed on their device.
 
-- ✅ 100% Free  
-- ✅ No ads  
-- ✅ No trackers  
-- ✅ Open Source (Apache-2.0 License)  
+- ✅ 100% Free
+- ✅ No ads
+- ✅ No trackers
+- ✅ Open Source (Apache-2.0 License)
 
 ---
 
@@ -27,7 +27,7 @@ The goal is to give users better visibility into what apps are installed on thei
   </a>
 </p>
 
-📊 **Downloads:**  
+📊 **Downloads:**
 ![GitHub all releases](https://img.shields.io/github/downloads/xabd/PrivacyScanner/total?label=Total%20Downloads&logo=github&color=brightgreen)
 
 [<img src="https://shields.rbtlog.dev/simple/nodomain.xabd.privacyscanner" alt="RB Status">](https://shields.rbtlog.dev/nodomain.xabd.privacyscanner)
@@ -36,52 +36,52 @@ The goal is to give users better visibility into what apps are installed on thei
 
 ## 📲 Install via Obtainium
 
-You can also install and update **PrivacyScanner** easily using **[Obtainium](https://apps.obtainium.im/)** — a privacy-respecting app store that fetches apps directly from their official source (like GitHub).  
+You can also install and update **PrivacyScanner** easily using **[Obtainium](https://apps.obtainium.im/)** — a privacy-respecting app store that fetches apps directly from their official source (like GitHub).
 
 ### 🧭 Steps to Install:
 
-1. Download and install **Obtainium** from its official website:  
+1. Download and install **Obtainium** from its official website:
    👉 [https://obtainium.imranr.dev](https://obtainium.imranr.dev)
 
-2. Open the Obtainium app and tap **➕ Add App**.  
+2. Open the Obtainium app and tap **➕ Add App**.
 
-3. Choose **Source Type:** `GitHub`.  
+3. Choose **Source Type:** `GitHub`.
 
-4. In the **Source URL** field, paste this link:  
+4. In the **Source URL** field, paste this link:
 https://github.com/xabd/PrivacyScanner
 
 5. Tap **Add**, and Obtainium will automatically detect the app, fetch releases, and keep it updated for you.
 
 ---
 
-## ☕ Support Development  
+## ☕ Support Development
 
-If you like PrivacyScanner, you can support me here:  
-👉 [**Ko-fi.com/DigitalEscape**](https://ko-fi.com/digitalescape)  
+If you like PrivacyScanner, you can support me here:
+👉 [**Ko-fi.com/DigitalEscape**](https://ko-fi.com/digitalescape)
 
-Your support helps keep this open-source project alive 💚  
+Your support helps keep this open-source project alive 💚
 
 ---
 
-## 📸 Screenshots  
+## 📸 Screenshots
 
 <p align="center">
-<img src="screenshots/screenshot1.jpg" width="200" />
-<img src="screenshots/screenshot2.jpg" width="200" />
-<img src="screenshots/screenshot3.jpg" width="200" />
-<img src="screenshots/screenshot4.jpg" width="200" />
+<img alt="screenshot1" src="screenshots/screenshot1.jpg" width="200" />
+<img alt="screenshot2" src="screenshots/screenshot2.jpg" width="200" />
+<img alt="screenshot3" src="screenshots/screenshot3.jpg" width="200" />
+<img alt="screenshot4" src="screenshots/screenshot4.jpg" width="200" />
 </p>
 
 ---
 ## 🌐 Community
 
-Join our Reddit community:  
+Join our Reddit community:
 👉 **[r/DigitalEscapeTools](https://www.reddit.com/r/DigitalEscapeTools/)**
 
 A place to share open-source tools, privacy-friendly alternatives, de-Googling resources, and ways to regain control over your digital life.
 ---
 
-## 🛠️ Build Instructions  
+## 🛠️ Build Instructions
 
 1. Clone this repository:
 ```bash
